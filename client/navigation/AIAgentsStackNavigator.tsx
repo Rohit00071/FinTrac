@@ -21,7 +21,7 @@ export default function AIAgentsStackNavigator() {
         <Stack.Navigator
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: theme.backgroundElevated,
+                    backgroundColor: theme.cardBackground,
                 },
                 headerTintColor: theme.text,
                 headerShadowVisible: false,

@@ -14,6 +14,7 @@ import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
 import { formatCurrency, formatDate, formatTime } from "@/lib/formatters";
 import { CATEGORY_CONFIG, ACCOUNT_CONFIG } from "@/types/finance";
 import { DashboardStackParamList } from "@/navigation/DashboardStackNavigator";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 type RouteType = RouteProp<DashboardStackParamList, "TransactionDetail">;
 
@@ -73,91 +74,93 @@ export default function TransactionDetailScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <View
-            style={[
-              styles.iconContainer,
-              { backgroundColor: categoryConfig.color + "20" },
-            ]}
-          >
-            <Feather
-              name={categoryConfig.icon as any}
-              size={32}
-              color={categoryConfig.color}
-            />
-          </View>
+        <AdaptiveContainer>
+          <View style={styles.header}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: categoryConfig.color + "20" },
+              ]}
+            >
+              <Feather
+                name={categoryConfig.icon as any}
+                size={32}
+                color={categoryConfig.color}
+              />
+            </View>
 
-          <View style={styles.amountRow}>
-            <Feather
-              name={isIncome ? "arrow-up-right" : "arrow-down-left"}
-              size={24}
-              color={amountColor}
-            />
-            <ThemedText style={[styles.amount, { color: amountColor }]}>
-              {isIncome ? "+" : "-"}
-              {formatCurrency(transaction.amount)}
+            <View style={styles.amountRow}>
+              <Feather
+                name={isIncome ? "arrow-up-right" : "arrow-down-left"}
+                size={24}
+                color={amountColor}
+              />
+              <ThemedText style={[styles.amount, { color: amountColor }]}>
+                {isIncome ? "+" : "-"}
+                {formatCurrency(transaction.amount)}
+              </ThemedText>
+            </View>
+
+            <ThemedText type="body" style={{ color: theme.textSecondary }}>
+              {categoryConfig.label}
             </ThemedText>
           </View>
 
-          <ThemedText type="body" style={{ color: theme.textSecondary }}>
-            {categoryConfig.label}
-          </ThemedText>
-        </View>
+          <View style={styles.detailsCard}>
+            <DetailRow
+              icon="calendar"
+              label="Date"
+              value={formatDate(transaction.date)}
+              theme={theme}
+            />
+            <DetailRow
+              icon="clock"
+              label="Time"
+              value={formatTime(transaction.createdAt)}
+              theme={theme}
+            />
+            <DetailRow
+              icon="credit-card"
+              label="Account"
+              value={account?.name || "Unknown"}
+              theme={theme}
+            />
+            {transaction.description ? (
+              <DetailRow
+                icon="file-text"
+                label="Description"
+                value={transaction.description}
+                theme={theme}
+              />
+            ) : null}
+            {transaction.notes ? (
+              <DetailRow
+                icon="edit-3"
+                label="Notes"
+                value={transaction.notes}
+                theme={theme}
+              />
+            ) : null}
+            {transaction.isRecurring ? (
+              <DetailRow
+                icon="repeat"
+                label="Recurring"
+                value="Yes"
+                theme={theme}
+              />
+            ) : null}
+          </View>
 
-        <View style={styles.detailsCard}>
-          <DetailRow
-            icon="calendar"
-            label="Date"
-            value={formatDate(transaction.date)}
-            theme={theme}
-          />
-          <DetailRow
-            icon="clock"
-            label="Time"
-            value={formatTime(transaction.createdAt)}
-            theme={theme}
-          />
-          <DetailRow
-            icon="credit-card"
-            label="Account"
-            value={account?.name || "Unknown"}
-            theme={theme}
-          />
-          {transaction.description ? (
-            <DetailRow
-              icon="file-text"
-              label="Description"
-              value={transaction.description}
-              theme={theme}
-            />
-          ) : null}
-          {transaction.notes ? (
-            <DetailRow
-              icon="edit-3"
-              label="Notes"
-              value={transaction.notes}
-              theme={theme}
-            />
-          ) : null}
-          {transaction.isRecurring ? (
-            <DetailRow
-              icon="repeat"
-              label="Recurring"
-              value="Yes"
-              theme={theme}
-            />
-          ) : null}
-        </View>
-
-        <Button
-          onPress={handleDelete}
-          style={[
-            styles.deleteButton,
-            { backgroundColor: FinanceColors.expense },
-          ]}
-        >
-          Delete Transaction
-        </Button>
+          <Button
+            onPress={handleDelete}
+            style={[
+              styles.deleteButton,
+              { backgroundColor: FinanceColors.expense },
+            ]}
+          >
+            Delete Transaction
+          </Button>
+        </AdaptiveContainer>
       </ScrollView>
     </ThemedView>
   );

@@ -17,8 +17,9 @@ import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { TransactionItem } from "@/components/TransactionItem";
-import { EmptyState } from "@/components/EmptyState";
 import { FAB } from "@/components/FAB";
+import { EmptyState } from "@/components/EmptyState";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 import { useTheme } from "@/hooks/useTheme";
 import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius } from "@/constants/theme";
@@ -110,142 +111,144 @@ export default function TransactionsScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <View
-        style={[
-          styles.filterContainer,
-          {
-            paddingTop: headerHeight + Spacing.sm,
-            backgroundColor: theme.backgroundRoot,
-          },
-        ]}
-      >
-        {showSearch ? (
-          <View style={styles.searchRow}>
-            <View
-              style={[
-                styles.searchInputContainer,
-                { backgroundColor: theme.backgroundDefault },
-              ]}
-            >
-              <Feather name="search" size={18} color={theme.textSecondary} />
-              <TextInput
-                style={[styles.searchInput, { color: theme.text }]}
-                placeholder="Search transactions..."
-                placeholderTextColor={theme.textSecondary}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                autoFocus
-              />
-              {searchQuery ? (
-                <Pressable onPress={() => setSearchQuery("")}>
-                  <Feather name="x" size={18} color={theme.textSecondary} />
-                </Pressable>
-              ) : null}
+      <AdaptiveContainer>
+        <View
+          style={[
+            styles.filterContainer,
+            {
+              paddingTop: headerHeight + Spacing.sm,
+              backgroundColor: theme.backgroundRoot,
+            },
+          ]}
+        >
+          {showSearch ? (
+            <View style={styles.searchRow}>
+              <View
+                style={[
+                  styles.searchInputContainer,
+                  { backgroundColor: theme.backgroundDefault },
+                ]}
+              >
+                <Feather name="search" size={18} color={theme.textSecondary} />
+                <TextInput
+                  style={[styles.searchInput, { color: theme.text }]}
+                  placeholder="Search transactions..."
+                  placeholderTextColor={theme.textSecondary}
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  autoFocus
+                />
+                {searchQuery ? (
+                  <Pressable onPress={() => setSearchQuery("")}>
+                    <Feather name="x" size={18} color={theme.textSecondary} />
+                  </Pressable>
+                ) : null}
+              </View>
+              <Pressable onPress={() => setShowSearch(false)}>
+                <ThemedText type="link">Cancel</ThemedText>
+              </Pressable>
             </View>
-            <Pressable onPress={() => setShowSearch(false)}>
-              <ThemedText type="link">Cancel</ThemedText>
-            </Pressable>
-          </View>
-        ) : (
-          <View style={styles.filterRow}>
-            <Pressable
-              onPress={() => setShowSearch(true)}
-              style={[
-                styles.searchButton,
-                { backgroundColor: theme.backgroundDefault },
-              ]}
-            >
-              <Feather name="search" size={18} color={theme.textSecondary} />
-            </Pressable>
-          </View>
-        )}
+          ) : (
+            <View style={styles.filterRow}>
+              <Pressable
+                onPress={() => setShowSearch(true)}
+                style={[
+                  styles.searchButton,
+                  { backgroundColor: theme.backgroundDefault },
+                ]}
+              >
+                <Feather name="search" size={18} color={theme.textSecondary} />
+              </Pressable>
+            </View>
+          )}
 
-        <View style={styles.categoryFilters}>
-          <Pressable
-            onPress={() => setSelectedCategory(null)}
-            style={[
-              styles.categoryChip,
-              {
-                backgroundColor: !selectedCategory
-                  ? theme.link
-                  : theme.backgroundDefault,
-              },
-            ]}
-          >
-            <ThemedText
-              type="small"
-              style={{
-                color: !selectedCategory ? "#FFFFFF" : theme.text,
-                fontWeight: "500",
-              }}
-            >
-              All
-            </ThemedText>
-          </Pressable>
-          {CATEGORIES.map((cat) => (
+          <View style={styles.categoryFilters}>
             <Pressable
-              key={cat}
-              onPress={() =>
-                setSelectedCategory(selectedCategory === cat ? null : cat)
-              }
+              onPress={() => setSelectedCategory(null)}
               style={[
                 styles.categoryChip,
                 {
-                  backgroundColor:
-                    selectedCategory === cat
-                      ? CATEGORY_CONFIG[cat].color
-                      : theme.backgroundDefault,
+                  backgroundColor: !selectedCategory
+                    ? theme.link
+                    : theme.backgroundDefault,
                 },
               ]}
             >
               <ThemedText
                 type="small"
                 style={{
-                  color: selectedCategory === cat ? "#FFFFFF" : theme.text,
+                  color: !selectedCategory ? "#FFFFFF" : theme.text,
                   fontWeight: "500",
                 }}
               >
-                {CATEGORY_CONFIG[cat].label}
+                All
               </ThemedText>
             </Pressable>
-          ))}
+            {CATEGORIES.map((cat) => (
+              <Pressable
+                key={cat}
+                onPress={() =>
+                  setSelectedCategory(selectedCategory === cat ? null : cat)
+                }
+                style={[
+                  styles.categoryChip,
+                  {
+                    backgroundColor:
+                      selectedCategory === cat
+                        ? CATEGORY_CONFIG[cat].color
+                        : theme.backgroundDefault,
+                  },
+                ]}
+              >
+                <ThemedText
+                  type="small"
+                  style={{
+                    color: selectedCategory === cat ? "#FFFFFF" : theme.text,
+                    fontWeight: "500",
+                  }}
+                >
+                  {CATEGORY_CONFIG[cat].label}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </View>
         </View>
-      </View>
 
-      {sections.length > 0 ? (
-        <SectionList
-          sections={sections}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          renderSectionHeader={renderSectionHeader}
-          contentContainerStyle={[
-            styles.listContent,
-            { paddingBottom: tabBarHeight + Spacing["4xl"] },
-          ]}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
-          }
-          scrollIndicatorInsets={{ bottom: insets.bottom }}
-          stickySectionHeadersEnabled={false}
-        />
-      ) : (
-        <View style={styles.emptyContainer}>
-          <EmptyState
-            icon="inbox"
-            title="No Transactions"
-            description={
-              searchQuery || selectedCategory
-                ? "No transactions match your filters"
-                : "Start tracking your finances by adding your first transaction"
+        {sections.length > 0 ? (
+          <SectionList
+            sections={sections}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            renderSectionHeader={renderSectionHeader}
+            contentContainerStyle={[
+              styles.listContent,
+              { paddingBottom: tabBarHeight + Spacing["4xl"] },
+            ]}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
             }
-            buttonText={
-              !searchQuery && !selectedCategory ? "Add Transaction" : undefined
-            }
-            onButtonPress={handleAddTransaction}
+            scrollIndicatorInsets={{ bottom: insets.bottom }}
+            stickySectionHeadersEnabled={false}
           />
-        </View>
-      )}
+        ) : (
+          <View style={styles.emptyContainer}>
+            <EmptyState
+              icon="inbox"
+              title="No Transactions"
+              description={
+                searchQuery || selectedCategory
+                  ? "No transactions match your filters"
+                  : "Start tracking your finances by adding your first transaction"
+              }
+              buttonText={
+                !searchQuery && !selectedCategory ? "Add Transaction" : undefined
+              }
+              onButtonPress={handleAddTransaction}
+            />
+          </View>
+        )}
+      </AdaptiveContainer>
 
       <FAB onPress={handleAddTransaction} />
     </ThemedView>

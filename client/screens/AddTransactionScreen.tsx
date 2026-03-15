@@ -15,6 +15,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Button } from "@/components/Button";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 import { useTheme } from "@/hooks/useTheme";
 import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
@@ -92,268 +93,288 @@ export default function AddTransactionScreen() {
   return (
     <ThemedView style={styles.container}>
       <KeyboardAwareScrollViewCompat
+        style={{ flex: 1 }}
         contentContainerStyle={[
           styles.content,
           {
             paddingTop: Spacing.xl,
-            paddingBottom: insets.bottom + Spacing["2xl"],
+            paddingBottom: Spacing.xl,
           },
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.typeToggle}>
-          <Pressable
-            onPress={() => setType("expense")}
-            style={[
-              styles.typeButton,
-              {
-                backgroundColor:
-                  type === "expense"
-                    ? FinanceColors.expense
-                    : theme.backgroundDefault,
-              },
-            ]}
-          >
-            <Feather
-              name="arrow-down-left"
-              size={20}
-              color={type === "expense" ? "#FFFFFF" : theme.text}
-            />
-            <ThemedText
+        <AdaptiveContainer>
+          <View style={styles.typeToggle}>
+            <Pressable
+              onPress={() => setType("expense")}
               style={[
-                styles.typeButtonText,
-                { color: type === "expense" ? "#FFFFFF" : theme.text },
-              ]}
-            >
-              Expense
-            </ThemedText>
-          </Pressable>
-          <Pressable
-            onPress={() => setType("income")}
-            style={[
-              styles.typeButton,
-              {
-                backgroundColor:
-                  type === "income"
-                    ? FinanceColors.income
-                    : theme.backgroundDefault,
-              },
-            ]}
-          >
-            <Feather
-              name="arrow-up-right"
-              size={20}
-              color={type === "income" ? "#FFFFFF" : theme.text}
-            />
-            <ThemedText
-              style={[
-                styles.typeButtonText,
-                { color: type === "income" ? "#FFFFFF" : theme.text },
-              ]}
-            >
-              Income
-            </ThemedText>
-          </Pressable>
-        </View>
-
-        {error ? (
-          <View
-            style={[
-              styles.errorContainer,
-              { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
-            ]}
-          >
-            <ThemedText
-              style={[
-                styles.errorText,
-                { color: isDark ? "#EF9A9A" : "#C62828" },
-              ]}
-            >
-              {error}
-            </ThemedText>
-          </View>
-        ) : null}
-
-        <View style={styles.amountContainer}>
-          <ThemedText style={styles.currencySymbol}>$</ThemedText>
-          <TextInput
-            style={[styles.amountInput, { color: theme.text }]}
-            placeholder="0.00"
-            placeholderTextColor={theme.textSecondary}
-            value={amount}
-            onChangeText={setAmount}
-            keyboardType="decimal-pad"
-            autoFocus
-          />
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Category
-          </ThemedText>
-          <View style={styles.categoryGrid}>
-            {CATEGORIES.map(([key, config]) => (
-              <Pressable
-                key={key}
-                onPress={() => setCategory(key)}
-                style={[
-                  styles.categoryItem,
-                  {
-                    backgroundColor:
-                      category === key
-                        ? config.color + "20"
-                        : theme.backgroundDefault,
-                    borderColor:
-                      category === key ? config.color : "transparent",
-                    borderWidth: 2,
-                  },
-                ]}
-              >
-                <Feather
-                  name={config.icon as any}
-                  size={24}
-                  color={category === key ? config.color : theme.textSecondary}
-                />
-                <ThemedText
-                  type="small"
-                  style={{
-                    color: category === key ? config.color : theme.text,
-                    marginTop: Spacing.xs,
-                    textAlign: "center",
-                  }}
-                  numberOfLines={1}
-                >
-                  {config.label}
-                </ThemedText>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Account
-          </ThemedText>
-          <View style={styles.accountList}>
-            {accounts.map((acc) => (
-              <Pressable
-                key={acc.id}
-                onPress={() => setAccountId(acc.id)}
-                style={[
-                  styles.accountItem,
-                  {
-                    backgroundColor:
-                      accountId === acc.id
-                        ? theme.link + "20"
-                        : theme.backgroundDefault,
-                    borderColor:
-                      accountId === acc.id ? theme.link : "transparent",
-                    borderWidth: 2,
-                  },
-                ]}
-              >
-                <View
-                  style={[
-                    styles.accountIcon,
-                    { backgroundColor: acc.color + "20" },
-                  ]}
-                >
-                  <Feather name={acc.icon as any} size={18} color={acc.color} />
-                </View>
-                <ThemedText type="body" style={{ fontWeight: "500" }}>
-                  {acc.name}
-                </ThemedText>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Description
-          </ThemedText>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.inputBackground,
-                color: theme.text,
-                borderColor: theme.border,
-              },
-            ]}
-            placeholder="What was this for?"
-            placeholderTextColor={theme.textSecondary}
-            value={description}
-            onChangeText={setDescription}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Notes (Optional)
-          </ThemedText>
-          <TextInput
-            style={[
-              styles.input,
-              styles.textArea,
-              {
-                backgroundColor: theme.inputBackground,
-                color: theme.text,
-                borderColor: theme.border,
-              },
-            ]}
-            placeholder="Add any additional notes..."
-            placeholderTextColor={theme.textSecondary}
-            value={notes}
-            onChangeText={setNotes}
-            multiline
-            numberOfLines={3}
-            textAlignVertical="top"
-          />
-        </View>
-
-        <Pressable
-          onPress={() => setIsRecurring(!isRecurring)}
-          style={[
-            styles.toggleRow,
-            { backgroundColor: theme.backgroundDefault },
-          ]}
-        >
-          <View style={styles.toggleLabel}>
-            <Feather name="repeat" size={20} color={theme.textSecondary} />
-            <ThemedText type="body">Recurring Transaction</ThemedText>
-          </View>
-          <View
-            style={[
-              styles.toggle,
-              {
-                backgroundColor: isRecurring ? theme.link : theme.border,
-              },
-            ]}
-          >
-            <View
-              style={[
-                styles.toggleKnob,
+                styles.typeButton,
                 {
-                  transform: [{ translateX: isRecurring ? 20 : 2 }],
+                  backgroundColor:
+                    type === "expense"
+                      ? FinanceColors.expense
+                      : theme.backgroundDefault,
                 },
               ]}
+            >
+              <Feather
+                name="arrow-down-left"
+                size={20}
+                color={type === "expense" ? "#FFFFFF" : theme.text}
+              />
+              <ThemedText
+                style={[
+                  styles.typeButtonText,
+                  { color: type === "expense" ? "#FFFFFF" : theme.text },
+                ]}
+              >
+                Expense
+              </ThemedText>
+            </Pressable>
+            <Pressable
+              onPress={() => setType("income")}
+              style={[
+                styles.typeButton,
+                {
+                  backgroundColor:
+                    type === "income"
+                      ? FinanceColors.income
+                      : theme.backgroundDefault,
+                },
+              ]}
+            >
+              <Feather
+                name="arrow-up-right"
+                size={20}
+                color={type === "income" ? "#FFFFFF" : theme.text}
+              />
+              <ThemedText
+                style={[
+                  styles.typeButtonText,
+                  { color: type === "income" ? "#FFFFFF" : theme.text },
+                ]}
+              >
+                Income
+              </ThemedText>
+            </Pressable>
+          </View>
+
+          {error ? (
+            <View
+              style={[
+                styles.errorContainer,
+                { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
+              ]}
+            >
+              <ThemedText
+                style={[
+                  styles.errorText,
+                  { color: isDark ? "#EF9A9A" : "#C62828" },
+                ]}
+              >
+                {error}
+              </ThemedText>
+            </View>
+          ) : null}
+
+          <View style={styles.amountContainer}>
+            <ThemedText style={styles.currencySymbol}>$</ThemedText>
+            <TextInput
+              style={[styles.amountInput, { color: theme.text }]}
+              placeholder="0.00"
+              placeholderTextColor={theme.textSecondary}
+              value={amount}
+              onChangeText={setAmount}
+              keyboardType="decimal-pad"
+              autoFocus
             />
           </View>
-        </Pressable>
 
-        <Button
-          onPress={handleSave}
-          disabled={isLoading}
-          style={styles.saveButton}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#FFFFFF" size="small" />
-          ) : (
-            "Save Transaction"
-          )}
-        </Button>
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Category
+            </ThemedText>
+            <View style={styles.categoryGrid}>
+              {CATEGORIES.map(([key, config]) => (
+                <Pressable
+                  key={key}
+                  onPress={() => setCategory(key)}
+                  style={[
+                    styles.categoryItem,
+                    {
+                      backgroundColor:
+                        category === key
+                          ? config.color + "20"
+                          : theme.backgroundDefault,
+                      borderColor:
+                        category === key ? config.color : "transparent",
+                      borderWidth: 2,
+                    },
+                  ]}
+                >
+                  <Feather
+                    name={config.icon as any}
+                    size={24}
+                    color={category === key ? config.color : theme.textSecondary}
+                  />
+                  <ThemedText
+                    type="small"
+                    style={{
+                      color: category === key ? config.color : theme.text,
+                      marginTop: Spacing.xs,
+                      textAlign: "center",
+                    }}
+                    numberOfLines={1}
+                  >
+                    {config.label}
+                  </ThemedText>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Account
+            </ThemedText>
+            <View style={styles.accountList}>
+              {accounts.map((acc) => (
+                <Pressable
+                  key={acc.id}
+                  onPress={() => setAccountId(acc.id)}
+                  style={[
+                    styles.accountItem,
+                    {
+                      backgroundColor:
+                        accountId === acc.id
+                          ? theme.link + "20"
+                          : theme.backgroundDefault,
+                      borderColor:
+                        accountId === acc.id ? theme.link : "transparent",
+                      borderWidth: 2,
+                    },
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.accountIcon,
+                      { backgroundColor: acc.color + "20" },
+                    ]}
+                  >
+                    <Feather name={acc.icon as any} size={18} color={acc.color} />
+                  </View>
+                  <ThemedText type="body" style={{ fontWeight: "500" }}>
+                    {acc.name}
+                  </ThemedText>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Description
+            </ThemedText>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.inputBackground,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
+              ]}
+              placeholder="What was this for?"
+              placeholderTextColor={theme.textSecondary}
+              value={description}
+              onChangeText={setDescription}
+            />
+          </View>
+
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Notes (Optional)
+            </ThemedText>
+            <TextInput
+              style={[
+                styles.input,
+                styles.textArea,
+                {
+                  backgroundColor: theme.inputBackground,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
+              ]}
+              placeholder="Add any additional notes..."
+              placeholderTextColor={theme.textSecondary}
+              value={notes}
+              onChangeText={setNotes}
+              multiline
+              numberOfLines={3}
+              textAlignVertical="top"
+            />
+          </View>
+
+          <Pressable
+            onPress={() => setIsRecurring(!isRecurring)}
+            style={[
+              styles.toggleRow,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
+          >
+            <View style={styles.toggleLabel}>
+              <Feather name="repeat" size={20} color={theme.textSecondary} />
+              <ThemedText type="body">Recurring Transaction</ThemedText>
+            </View>
+            <View
+              style={[
+                styles.toggle,
+                {
+                  backgroundColor: isRecurring ? theme.link : theme.border,
+                },
+              ]}
+            >
+              <View
+                style={[
+                  styles.toggleKnob,
+                  {
+                    transform: [{ translateX: isRecurring ? 20 : 2 }],
+                  },
+                ]}
+              />
+            </View>
+          </Pressable>
+        </AdaptiveContainer>
       </KeyboardAwareScrollViewCompat>
+      <View
+        style={[
+          styles.footer,
+          {
+            paddingBottom: Math.max(insets.bottom, Spacing.lg),
+            borderTopColor: theme.border,
+            alignItems: "center",
+          },
+        ]}
+      >
+        <AdaptiveContainer 
+            style={{ 
+                flexDirection: 'row', 
+                paddingHorizontal: 0 
+            }}
+        >
+          <Button
+            onPress={handleSave}
+            disabled={isLoading}
+            style={[styles.saveButton, { flex: 1 }]}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" size="small" />
+            ) : (
+              "Save Transaction"
+            )}
+          </Button>
+        </AdaptiveContainer>
+      </View>
     </ThemedView>
   );
 }
@@ -364,6 +385,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: Spacing.lg,
+    flexGrow: 1,
   },
   typeToggle: {
     flexDirection: "row",
@@ -484,6 +506,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   saveButton: {
-    marginTop: Spacing.md,
+    marginTop: 0,
+  },
+  footer: {
+    padding: Spacing.lg,
+    borderTopWidth: 1,
   },
 });

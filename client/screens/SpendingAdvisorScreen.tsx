@@ -15,37 +15,22 @@ import { Spacing, BorderRadius } from "@/constants/theme";
 import { spendingAdviceStorage, aiSettingsStorage } from "@/lib/ai-storage";
 import { SpendingAdvisorAgent } from "@/lib/ai-agents";
 import { SpendingAdvice } from "@/types/finance";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 export default function SpendingAdvisorScreen() {
     const { theme } = useTheme();
-    const { transactions, budgets, accounts } = useFinance();
+    const { transactions, budgets, accounts, aiAnalysis } = useFinance();
 
     const [isLoading, setIsLoading] = useState(true);
     const [advice, setAdvice] = useState<SpendingAdvice | null>(null);
 
     useEffect(() => {
-        loadData();
-    }, [transactions, budgets, accounts]);
-
-    const loadData = async () => {
-        try {
-            setIsLoading(true);
-            const settings = await aiSettingsStorage.get();
-            const advisor = new SpendingAdvisorAgent(
-                transactions,
-                budgets,
-                accounts,
-                settings
-            );
-            const newAdvice = advisor.generateAdvice();
-            setAdvice(newAdvice);
-            await spendingAdviceStorage.save(newAdvice);
-        } catch (error) {
-            console.error("Error loading spending advice:", error);
-        } finally {
+        if (aiAnalysis) {
+            const advisor = new SpendingAdvisorAgent(aiAnalysis);
+            setAdvice(advisor.generateAdvice());
             setIsLoading(false);
         }
-    };
+    }, [aiAnalysis]);
 
     if (isLoading || !advice) {
         return (
@@ -65,162 +50,164 @@ export default function SpendingAdvisorScreen() {
             style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
             contentContainerStyle={styles.content}
         >
-            {/* Header */}
-            <LinearGradient
-                colors={["#2196F3", "#1976D2"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.header}
-            >
-                <Feather name="dollar-sign" size={36} color="#fff" />
-                <Text style={styles.headerTitle}>Spending Advisor</Text>
-                <Text style={styles.headerSubtitle}>Smart Budget Management</Text>
-            </LinearGradient>
+            <AdaptiveContainer>
+                {/* Header */}
+                <LinearGradient
+                    colors={["#2196F3", "#1976D2"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.header}
+                >
+                    <Feather name="dollar-sign" size={36} color="#fff" />
+                    <Text style={styles.headerTitle}>Spending Advisor</Text>
+                    <Text style={styles.headerSubtitle}>Smart Budget Management</Text>
+                </LinearGradient>
 
-            {/* Daily Spending Overview */}
-            <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
-                <Text style={[styles.cardTitle, { color: theme.text }]}>
-                    Today's Spending
-                </Text>
+                {/* Daily Spending Overview */}
+                <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
+                    <Text style={[styles.cardTitle, { color: theme.text }]}>
+                        Today's Spending
+                    </Text>
 
-                {/* Progress Circle */}
-                <View style={styles.progressContainer}>
-                    <View style={styles.progressCircle}>
-                        <Text style={[styles.progressAmount, { color: theme.text }]}>
+                    {/* Progress Circle */}
+                    <View style={styles.progressContainer}>
+                        <View style={styles.progressCircle}>
+                            <Text style={[styles.progressAmount, { color: theme.text }]}>
+                                ₹{advice.todaySpent.toFixed(0)}
+                            </Text>
+                            <Text style={[styles.progressLabel, { color: theme.textSecondary }]}>
+                                of ₹{advice.dailyLimit.toFixed(0)}
+                            </Text>
+                        </View>
+                    </View>
+
+                    {/* Progress Bar */}
+                    <View style={[styles.progressBar, { backgroundColor: theme.border }]}>
+                        <View
+                            style={[
+                                styles.progressFill,
+                                {
+                                    width: `${Math.min(spendingProgress, 100)}%`,
+                                    backgroundColor: isOverBudget ? "#F44336" : "#4CAF50",
+                                },
+                            ]}
+                        />
+                    </View>
+
+                    {/* Remaining Amount */}
+                    <View style={styles.remainingContainer}>
+                        <Feather
+                            name={isOverBudget ? "alert-circle" : "check-circle"}
+                            size={20}
+                            color={isOverBudget ? "#F44336" : "#4CAF50"}
+                        />
+                        <Text
+                            style={[
+                                styles.remainingText,
+                                { color: isOverBudget ? "#F44336" : "#4CAF50" },
+                            ]}
+                        >
+                            {isOverBudget
+                                ? `₹${Math.abs(advice.remainingToday).toFixed(0)} over budget`
+                                : `₹${advice.remainingToday.toFixed(0)} remaining today`}
+                        </Text>
+                    </View>
+                </View>
+
+                {/* Weekly Projection */}
+                <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
+                    <View style={styles.projectionHeader}>
+                        <Feather name="trending-up" size={20} color={theme.link} />
+                        <Text style={[styles.cardTitle, { color: theme.text, marginLeft: Spacing.xs }]}>
+                            Weekly Projection
+                        </Text>
+                    </View>
+                    <Text style={[styles.projectionAmount, { color: theme.text }]}>
+                        ₹{advice.weeklyProjection.toFixed(0)}
+                    </Text>
+                    <Text style={[styles.projectionLabel, { color: theme.textSecondary }]}>
+                        Estimated spending for the next 7 days
+                    </Text>
+                </View>
+
+                {/* AI Tips */}
+                {advice.tips.length > 0 && (
+                    <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
+                        <View style={styles.tipsHeader}>
+                            <Feather name="zap" size={20} color="#FF9800" />
+                            <Text style={[styles.cardTitle, { color: theme.text, marginLeft: Spacing.xs }]}>
+                                AI Tips
+                            </Text>
+                        </View>
+                        {advice.tips.map((tip, index) => (
+                            <View key={index} style={styles.tipItem}>
+                                <View style={[styles.tipDot, { backgroundColor: "#FF9800" }]} />
+                                <Text style={[styles.tipText, { color: theme.text }]}>{tip}</Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                {/* Alerts */}
+                {advice.alerts.length > 0 && (
+                    <View style={[styles.card, { backgroundColor: "#FFF3E0" }]}>
+                        <View style={styles.alertsHeader}>
+                            <Feather name="alert-triangle" size={20} color="#F57C00" />
+                            <Text style={[styles.cardTitle, { color: "#E65100", marginLeft: Spacing.xs }]}>
+                                Alerts
+                            </Text>
+                        </View>
+                        {advice.alerts.map((alert, index) => (
+                            <View key={index} style={styles.alertItem}>
+                                <View style={[styles.alertDot, { backgroundColor: "#F57C00" }]} />
+                                <Text style={[styles.alertText, { color: "#E65100" }]}>{alert}</Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                {/* Spending Insights */}
+                <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
+                    <View style={styles.insightsHeader}>
+                        <Feather name="bar-chart-2" size={20} color={theme.link} />
+                        <Text style={[styles.cardTitle, { color: theme.text, marginLeft: Spacing.xs }]}>
+                            Spending Insights
+                        </Text>
+                    </View>
+
+                    <View style={styles.insightRow}>
+                        <Text style={[styles.insightLabel, { color: theme.textSecondary }]}>
+                            Daily Budget
+                        </Text>
+                        <Text style={[styles.insightValue, { color: theme.text }]}>
+                            ₹{advice.dailyLimit.toFixed(0)}
+                        </Text>
+                    </View>
+
+                    <View style={styles.insightRow}>
+                        <Text style={[styles.insightLabel, { color: theme.textSecondary }]}>
+                            Spent Today
+                        </Text>
+                        <Text style={[styles.insightValue, { color: theme.text }]}>
                             ₹{advice.todaySpent.toFixed(0)}
                         </Text>
-                        <Text style={[styles.progressLabel, { color: theme.textSecondary }]}>
-                            of ₹{advice.dailyLimit.toFixed(0)}
+                    </View>
+
+                    <View style={styles.insightRow}>
+                        <Text style={[styles.insightLabel, { color: theme.textSecondary }]}>
+                            Budget Usage
+                        </Text>
+                        <Text
+                            style={[
+                                styles.insightValue,
+                                { color: isOverBudget ? "#F44336" : theme.text },
+                            ]}
+                        >
+                            {spendingProgress.toFixed(0)}%
                         </Text>
                     </View>
                 </View>
-
-                {/* Progress Bar */}
-                <View style={[styles.progressBar, { backgroundColor: theme.border }]}>
-                    <View
-                        style={[
-                            styles.progressFill,
-                            {
-                                width: `${Math.min(spendingProgress, 100)}%`,
-                                backgroundColor: isOverBudget ? "#F44336" : "#4CAF50",
-                            },
-                        ]}
-                    />
-                </View>
-
-                {/* Remaining Amount */}
-                <View style={styles.remainingContainer}>
-                    <Feather
-                        name={isOverBudget ? "alert-circle" : "check-circle"}
-                        size={20}
-                        color={isOverBudget ? "#F44336" : "#4CAF50"}
-                    />
-                    <Text
-                        style={[
-                            styles.remainingText,
-                            { color: isOverBudget ? "#F44336" : "#4CAF50" },
-                        ]}
-                    >
-                        {isOverBudget
-                            ? `₹${Math.abs(advice.remainingToday).toFixed(0)} over budget`
-                            : `₹${advice.remainingToday.toFixed(0)} remaining today`}
-                    </Text>
-                </View>
-            </View>
-
-            {/* Weekly Projection */}
-            <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
-                <View style={styles.projectionHeader}>
-                    <Feather name="trending-up" size={20} color={theme.link} />
-                    <Text style={[styles.cardTitle, { color: theme.text, marginLeft: Spacing.xs }]}>
-                        Weekly Projection
-                    </Text>
-                </View>
-                <Text style={[styles.projectionAmount, { color: theme.text }]}>
-                    ₹{advice.weeklyProjection.toFixed(0)}
-                </Text>
-                <Text style={[styles.projectionLabel, { color: theme.textSecondary }]}>
-                    Estimated spending for the next 7 days
-                </Text>
-            </View>
-
-            {/* AI Tips */}
-            {advice.tips.length > 0 && (
-                <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
-                    <View style={styles.tipsHeader}>
-                        <Feather name="zap" size={20} color="#FF9800" />
-                        <Text style={[styles.cardTitle, { color: theme.text, marginLeft: Spacing.xs }]}>
-                            AI Tips
-                        </Text>
-                    </View>
-                    {advice.tips.map((tip, index) => (
-                        <View key={index} style={styles.tipItem}>
-                            <View style={[styles.tipDot, { backgroundColor: "#FF9800" }]} />
-                            <Text style={[styles.tipText, { color: theme.text }]}>{tip}</Text>
-                        </View>
-                    ))}
-                </View>
-            )}
-
-            {/* Alerts */}
-            {advice.alerts.length > 0 && (
-                <View style={[styles.card, { backgroundColor: "#FFF3E0" }]}>
-                    <View style={styles.alertsHeader}>
-                        <Feather name="alert-triangle" size={20} color="#F57C00" />
-                        <Text style={[styles.cardTitle, { color: "#E65100", marginLeft: Spacing.xs }]}>
-                            Alerts
-                        </Text>
-                    </View>
-                    {advice.alerts.map((alert, index) => (
-                        <View key={index} style={styles.alertItem}>
-                            <View style={[styles.alertDot, { backgroundColor: "#F57C00" }]} />
-                            <Text style={[styles.alertText, { color: "#E65100" }]}>{alert}</Text>
-                        </View>
-                    ))}
-                </View>
-            )}
-
-            {/* Spending Insights */}
-            <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
-                <View style={styles.insightsHeader}>
-                    <Feather name="bar-chart-2" size={20} color={theme.link} />
-                    <Text style={[styles.cardTitle, { color: theme.text, marginLeft: Spacing.xs }]}>
-                        Spending Insights
-                    </Text>
-                </View>
-
-                <View style={styles.insightRow}>
-                    <Text style={[styles.insightLabel, { color: theme.textSecondary }]}>
-                        Daily Budget
-                    </Text>
-                    <Text style={[styles.insightValue, { color: theme.text }]}>
-                        ₹{advice.dailyLimit.toFixed(0)}
-                    </Text>
-                </View>
-
-                <View style={styles.insightRow}>
-                    <Text style={[styles.insightLabel, { color: theme.textSecondary }]}>
-                        Spent Today
-                    </Text>
-                    <Text style={[styles.insightValue, { color: theme.text }]}>
-                        ₹{advice.todaySpent.toFixed(0)}
-                    </Text>
-                </View>
-
-                <View style={styles.insightRow}>
-                    <Text style={[styles.insightLabel, { color: theme.textSecondary }]}>
-                        Budget Usage
-                    </Text>
-                    <Text
-                        style={[
-                            styles.insightValue,
-                            { color: isOverBudget ? "#F44336" : theme.text },
-                        ]}
-                    >
-                        {spendingProgress.toFixed(0)}%
-                    </Text>
-                </View>
-            </View>
+            </AdaptiveContainer>
         </ScrollView>
     );
 }

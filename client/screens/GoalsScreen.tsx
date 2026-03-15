@@ -20,6 +20,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing } from "@/constants/theme";
 import { GoalsStackParamList } from "@/navigation/GoalsStackNavigator";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 type NavigationProp = NativeStackNavigationProp<GoalsStackParamList>;
 
@@ -70,47 +71,49 @@ export default function GoalsScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
         }
       >
-        {goals.length === 0 ? (
-          <EmptyState
-            icon="target"
-            title="Set Your First Goal"
-            description="Create savings goals to track your progress towards financial milestones."
-            buttonText="Create Goal"
-            onButtonPress={handleAddGoal}
-          />
-        ) : (
-          <>
-            {activeGoals.length > 0 ? (
-              <View style={styles.section}>
-                <ThemedText type="h4" style={styles.sectionTitle}>
-                  Active Goals ({activeGoals.length})
-                </ThemedText>
-                {activeGoals.map((goal) => (
-                  <GoalCard
-                    key={goal.id}
-                    goal={goal}
-                    onPress={() => handleGoalPress(goal.id)}
-                  />
-                ))}
-              </View>
-            ) : null}
+        <AdaptiveContainer>
+          {goals.length === 0 ? (
+            <EmptyState
+              icon="target"
+              title="Set Your First Goal"
+              description="Create savings goals to track your progress towards financial milestones."
+              buttonText="Create Goal"
+              onButtonPress={handleAddGoal}
+            />
+          ) : (
+            <>
+              {activeGoals.length > 0 ? (
+                <View style={styles.section}>
+                  <ThemedText type="h4" style={styles.sectionTitle}>
+                    Active Goals ({activeGoals.length})
+                  </ThemedText>
+                  {activeGoals.map((goal) => (
+                    <GoalCard
+                      key={goal.id}
+                      goal={goal}
+                      onPress={() => handleGoalPress(goal.id)}
+                    />
+                  ))}
+                </View>
+              ) : null}
 
-            {completedGoals.length > 0 ? (
-              <View style={styles.section}>
-                <ThemedText type="h4" style={styles.sectionTitle}>
-                  Completed ({completedGoals.length})
-                </ThemedText>
-                {completedGoals.map((goal) => (
-                  <GoalCard
-                    key={goal.id}
-                    goal={goal}
-                    onPress={() => handleGoalPress(goal.id)}
-                  />
-                ))}
-              </View>
-            ) : null}
-          </>
-        )}
+              {completedGoals.length > 0 ? (
+                <View style={styles.section}>
+                  <ThemedText type="h4" style={styles.sectionTitle}>
+                    Completed ({completedGoals.length})
+                  </ThemedText>
+                  {completedGoals.map((goal) => (
+                    <GoalCard
+                      key={goal.id}
+                      goal={goal}
+                      onPress={() => handleGoalPress(goal.id)}
+                    />
+                  ))}
+                </View>
+              ) : null}
+            </>
+          )}
+        </AdaptiveContainer>
       </ScrollView>
     </ThemedView>
   );

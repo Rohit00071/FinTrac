@@ -24,7 +24,7 @@ import {
   billStorage,
 } from "@/lib/storage";
 import { aiSettingsStorage, investmentStorage } from "@/lib/ai-storage";
-import { InvestmentBrokerAgent } from "@/lib/ai-agents";
+import { InvestmentBrokerAgent, fetchAIAnalysis, AIAnalysisResult } from "@/lib/ai-agents";
 import { useAuth } from "./AuthContext";
 
 interface FinanceContextType {
@@ -61,6 +61,7 @@ interface FinanceContextType {
   getMonthlyIncome: (month?: string) => number;
   getMonthlyExpense: (month?: string) => number;
   getCategorySpending: (category: CategoryType, month?: string) => number;
+  aiAnalysis: AIAnalysisResult | null;
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
@@ -72,6 +73,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [bills, setBills] = useState<Bill[]>([]);
+  const [aiAnalysis, setAiAnalysis] = useState<AIAnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const refreshData = useCallback(async () => {
@@ -89,6 +91,11 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       setBudgets(bdgts);
       setGoals(gls);
       setBills(bls);
+
+      // Perform AI Analysis
+      const settings = await aiSettingsStorage.get();
+      const analysis = await fetchAIAnalysis(txns, accts, bdgts, settings);
+      setAiAnalysis(analysis);
     } catch (error) {
       console.error("Error refreshing data:", error);
     } finally {
@@ -122,8 +129,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       // Fetch fresh data for analysis
       const currentAccounts = await accountStorage.getAll();
       const currentGoals = await goalStorage.getAll();
+      const currentBudgets = await budgetStorage.getAll();
 
-      const broker = new InvestmentBrokerAgent(currentAccounts, currentGoals, settings);
+      const analysis = await fetchAIAnalysis(transactions, currentAccounts, currentBudgets, settings);
+      const broker = new InvestmentBrokerAgent(analysis, settings);
       const recs = broker.generateRecommendations();
 
       if (recs.length > 0) {
@@ -380,6 +389,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         getMonthlyIncome,
         getMonthlyExpense,
         getCategorySpending,
+        aiAnalysis,
       }}
     >
       {children}

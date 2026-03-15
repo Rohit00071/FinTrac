@@ -19,6 +19,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
 import { AVATAR_OPTIONS } from "@/types/finance";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 const CURRENCY_OPTIONS = [
   { code: "USD", symbol: "$", label: "US Dollar" },
@@ -91,163 +92,165 @@ export default function ProfileScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.avatarSection}>
-          <View
-            style={[
-              styles.currentAvatar,
-              { backgroundColor: theme.link + "20" },
-            ]}
-          >
-            <Feather
-              name={selectedAvatar as any}
-              size={48}
-              color={theme.link}
+        <AdaptiveContainer>
+          <View style={styles.avatarSection}>
+            <View
+              style={[
+                styles.currentAvatar,
+                { backgroundColor: theme.link + "20" },
+              ]}
+            >
+              <Feather
+                name={selectedAvatar as any}
+                size={48}
+                color={theme.link}
+              />
+            </View>
+            <ThemedText type="small" style={{ color: theme.textSecondary }}>
+              Choose an avatar
+            </ThemedText>
+            <View style={styles.avatarGrid}>
+              {AVATAR_OPTIONS.map((avatar) => (
+                <Pressable
+                  key={avatar}
+                  onPress={() => setSelectedAvatar(avatar)}
+                  style={[
+                    styles.avatarOption,
+                    {
+                      backgroundColor:
+                        selectedAvatar === avatar
+                          ? theme.link + "20"
+                          : theme.backgroundDefault,
+                      borderColor:
+                        selectedAvatar === avatar ? theme.link : "transparent",
+                      borderWidth: 2,
+                    },
+                  ]}
+                >
+                  <Feather
+                    name={avatar as any}
+                    size={24}
+                    color={
+                      selectedAvatar === avatar ? theme.link : theme.textSecondary
+                    }
+                  />
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Full Name
+            </ThemedText>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.inputBackground,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
+              ]}
+              placeholder="Enter your name"
+              placeholderTextColor={theme.textSecondary}
+              value={name}
+              onChangeText={setName}
             />
           </View>
-          <ThemedText type="small" style={{ color: theme.textSecondary }}>
-            Choose an avatar
-          </ThemedText>
-          <View style={styles.avatarGrid}>
-            {AVATAR_OPTIONS.map((avatar) => (
-              <Pressable
-                key={avatar}
-                onPress={() => setSelectedAvatar(avatar)}
-                style={[
-                  styles.avatarOption,
-                  {
-                    backgroundColor:
-                      selectedAvatar === avatar
-                        ? theme.link + "20"
-                        : theme.backgroundDefault,
-                    borderColor:
-                      selectedAvatar === avatar ? theme.link : "transparent",
-                    borderWidth: 2,
-                  },
-                ]}
-              >
-                <Feather
-                  name={avatar as any}
-                  size={24}
-                  color={
-                    selectedAvatar === avatar ? theme.link : theme.textSecondary
-                  }
-                />
-              </Pressable>
-            ))}
+
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Email
+            </ThemedText>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.inputBackground,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
+              ]}
+              placeholder="Enter your email"
+              placeholderTextColor={theme.textSecondary}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
           </View>
-        </View>
 
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Full Name
-          </ThemedText>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.inputBackground,
-                color: theme.text,
-                borderColor: theme.border,
-              },
-            ]}
-            placeholder="Enter your name"
-            placeholderTextColor={theme.textSecondary}
-            value={name}
-            onChangeText={setName}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Email
-          </ThemedText>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.inputBackground,
-                color: theme.text,
-                borderColor: theme.border,
-              },
-            ]}
-            placeholder="Enter your email"
-            placeholderTextColor={theme.textSecondary}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Currency
-          </ThemedText>
-          <View style={styles.currencyGrid}>
-            {CURRENCY_OPTIONS.map((currency) => (
-              <Pressable
-                key={currency.code}
-                onPress={() => setSelectedCurrency(currency.code)}
-                style={[
-                  styles.currencyOption,
-                  {
-                    backgroundColor:
-                      selectedCurrency === currency.code
-                        ? theme.link + "20"
-                        : theme.backgroundDefault,
-                    borderColor:
-                      selectedCurrency === currency.code
-                        ? theme.link
-                        : "transparent",
-                    borderWidth: 2,
-                  },
-                ]}
-              >
-                <ThemedText style={styles.currencySymbol}>
-                  {currency.symbol}
-                </ThemedText>
-                <ThemedText
-                  type="small"
-                  style={{
-                    color:
-                      selectedCurrency === currency.code
-                        ? theme.link
-                        : theme.textSecondary,
-                  }}
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Currency
+            </ThemedText>
+            <View style={styles.currencyGrid}>
+              {CURRENCY_OPTIONS.map((currency) => (
+                <Pressable
+                  key={currency.code}
+                  onPress={() => setSelectedCurrency(currency.code)}
+                  style={[
+                    styles.currencyOption,
+                    {
+                      backgroundColor:
+                        selectedCurrency === currency.code
+                          ? theme.link + "20"
+                          : theme.backgroundDefault,
+                      borderColor:
+                        selectedCurrency === currency.code
+                          ? theme.link
+                          : "transparent",
+                      borderWidth: 2,
+                    },
+                  ]}
                 >
-                  {currency.code}
-                </ThemedText>
-              </Pressable>
-            ))}
+                  <ThemedText style={styles.currencySymbol}>
+                    {currency.symbol}
+                  </ThemedText>
+                  <ThemedText
+                    type="small"
+                    style={{
+                      color:
+                        selectedCurrency === currency.code
+                          ? theme.link
+                          : theme.textSecondary,
+                    }}
+                  >
+                    {currency.code}
+                  </ThemedText>
+                </Pressable>
+              ))}
+            </View>
           </View>
-        </View>
 
-        <Button
-          onPress={handleSave}
-          disabled={isLoading}
-          style={[
-            styles.saveButton,
-            isSaved && { backgroundColor: FinanceColors.income },
-          ]}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#FFFFFF" size="small" />
-          ) : isSaved ? (
-            "Saved!"
-          ) : (
-            "Save Changes"
-          )}
-        </Button>
+          <Button
+            onPress={handleSave}
+            disabled={isLoading}
+            style={[
+              styles.saveButton,
+              isSaved && { backgroundColor: FinanceColors.income },
+            ]}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" size="small" />
+            ) : isSaved ? (
+              "Saved!"
+            ) : (
+              "Save Changes"
+            )}
+          </Button>
 
-        <Button
-          onPress={handleLogout}
-          style={[
-            styles.logoutButton,
-            { backgroundColor: FinanceColors.expense },
-          ]}
-        >
-          Log Out
-        </Button>
+          <Button
+            onPress={handleLogout}
+            style={[
+              styles.logoutButton,
+              { backgroundColor: FinanceColors.expense },
+            ]}
+          >
+            Log Out
+          </Button>
+        </AdaptiveContainer>
       </KeyboardAwareScrollViewCompat>
     </ThemedView>
   );

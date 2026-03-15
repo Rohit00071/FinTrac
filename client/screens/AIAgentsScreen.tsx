@@ -15,6 +15,8 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useTheme } from "@/hooks/useTheme";
 import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius } from "@/constants/theme";
+import { useResponsive } from "@/hooks/useResponsive";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 import {
     investmentStorage,
     spendingAdviceStorage,
@@ -30,6 +32,7 @@ type NavigationProp = NativeStackNavigationProp<AIAgentStackParamList>;
 
 export default function AIAgentsScreen() {
     const { theme } = useTheme();
+    const { isDesktop } = useResponsive();
     const navigation = useNavigation<NavigationProp>();
     const {
         accounts,
@@ -37,6 +40,7 @@ export default function AIAgentsScreen() {
         budgets,
         goals,
         isLoading: financeLoading,
+        aiAnalysis,
     } = useFinance();
 
     const [isLoading, setIsLoading] = useState(true);
@@ -53,7 +57,7 @@ export default function AIAgentsScreen() {
 
     useEffect(() => {
         loadData();
-    }, [accounts, transactions, budgets, goals]);
+    }, [accounts, transactions, budgets, goals, aiAnalysis]);
 
     const loadData = async () => {
         try {
@@ -62,7 +66,7 @@ export default function AIAgentsScreen() {
 
             // Load investment stats
             const investments = await investmentStorage.getAll();
-            const broker = new InvestmentBrokerAgent(accounts, goals, settings);
+            const broker = new InvestmentBrokerAgent(aiAnalysis, settings);
             const metrics = broker.calculatePortfolioMetrics(investments);
             setInvestmentStats({
                 totalInvested: metrics.totalInvested,
@@ -71,12 +75,7 @@ export default function AIAgentsScreen() {
             });
 
             // Load spending stats
-            const advisor = new SpendingAdvisorAgent(
-                transactions,
-                budgets,
-                accounts,
-                settings
-            );
+            const advisor = new SpendingAdvisorAgent(aiAnalysis);
             const advice = advisor.generateAdvice();
             setSpendingStats({
                 dailyLimit: advice.dailyLimit,
@@ -120,141 +119,153 @@ export default function AIAgentsScreen() {
                 </Text>
             </LinearGradient>
 
-            {/* Investment Broker Agent Card */}
-            <TouchableOpacity
-                style={[styles.agentCard, { backgroundColor: theme.cardBackground }]}
-                onPress={() => navigation.navigate("InvestmentBroker")}
-                activeOpacity={0.7}
-            >
-                <LinearGradient
-                    colors={["#4CAF50", "#45a049"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.agentIconContainer}
-                >
-                    <Feather name="trending-up" size={32} color="#fff" />
-                </LinearGradient>
+            <AdaptiveContainer>
+                <View style={[styles.agentsGrid, isDesktop && styles.agentsGridDesktop]}>
+                    {/* Investment Broker Agent Card */}
+                    <TouchableOpacity
+                        style={[
+                            styles.agentCard, 
+                            { backgroundColor: theme.cardBackground },
+                            isDesktop && styles.agentCardDesktop
+                        ]}
+                        onPress={() => navigation.navigate("InvestmentBroker")}
+                        activeOpacity={0.7}
+                    >
+                        <LinearGradient
+                            colors={["#4CAF50", "#45a049"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={styles.agentIconContainer}
+                        >
+                            <Feather name="trending-up" size={32} color="#fff" />
+                        </LinearGradient>
 
-                <View style={styles.agentContent}>
-                    <View style={styles.agentHeader}>
-                        <Text style={[styles.agentTitle, { color: theme.text }]}>
-                            Investment Broker
-                        </Text>
-                        <Feather name="chevron-right" size={24} color={theme.textSecondary} />
-                    </View>
-                    <Text style={[styles.agentDescription, { color: theme.textSecondary }]}>
-                        AI-powered investment recommendations for your savings
-                    </Text>
+                        <View style={styles.agentContent}>
+                            <View style={styles.agentHeader}>
+                                <Text style={[styles.agentTitle, { color: theme.text }]}>
+                                    Investment Broker
+                                </Text>
+                                <Feather name="chevron-right" size={24} color={theme.textSecondary} />
+                            </View>
+                            <Text style={[styles.agentDescription, { color: theme.textSecondary }]}>
+                                AI-powered investment recommendations for your savings
+                            </Text>
 
-                    <View style={styles.statsRow}>
-                        <View style={styles.statItem}>
-                            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-                                Invested
-                            </Text>
-                            <Text style={[styles.statValue, { color: theme.text }]}>
-                                ₹{investmentStats.totalInvested.toLocaleString()}
-                            </Text>
+                            <View style={styles.statsRow}>
+                                <View style={styles.statItem}>
+                                    <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+                                        Invested
+                                    </Text>
+                                    <Text style={[styles.statValue, { color: theme.text }]}>
+                                        ₹{investmentStats.totalInvested.toLocaleString()}
+                                    </Text>
+                                </View>
+                                <View style={styles.statItem}>
+                                    <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+                                        Current Value
+                                    </Text>
+                                    <Text style={[styles.statValue, { color: theme.text }]}>
+                                        ₹{investmentStats.totalValue.toLocaleString()}
+                                    </Text>
+                                </View>
+                                <View style={styles.statItem}>
+                                    <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+                                        Return
+                                    </Text>
+                                    <Text
+                                        style={[
+                                            styles.statValue,
+                                            {
+                                                color:
+                                                    investmentStats.returnPercentage >= 0 ? "#4CAF50" : "#F44336",
+                                            },
+                                        ]}
+                                    >
+                                        {investmentStats.returnPercentage >= 0 ? "+" : ""}
+                                        {investmentStats.returnPercentage.toFixed(1)}%
+                                    </Text>
+                                </View>
+                            </View>
                         </View>
-                        <View style={styles.statItem}>
-                            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-                                Current Value
+                    </TouchableOpacity>
+
+                    {/* Spending Advisor Agent Card */}
+                    <TouchableOpacity
+                        style={[
+                            styles.agentCard, 
+                            { backgroundColor: theme.cardBackground },
+                            isDesktop && styles.agentCardDesktop
+                        ]}
+                        onPress={() => navigation.navigate("SpendingAdvisor")}
+                        activeOpacity={0.7}
+                    >
+                        <LinearGradient
+                            colors={["#2196F3", "#1976D2"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={styles.agentIconContainer}
+                        >
+                            <Feather name="dollar-sign" size={32} color="#fff" />
+                        </LinearGradient>
+
+                        <View style={styles.agentContent}>
+                            <View style={styles.agentHeader}>
+                                <Text style={[styles.agentTitle, { color: theme.text }]}>
+                                    Spending Advisor
+                                </Text>
+                                <Feather name="chevron-right" size={24} color={theme.textSecondary} />
+                            </View>
+                            <Text style={[styles.agentDescription, { color: theme.textSecondary }]}>
+                                Smart daily spending recommendations and budget insights
                             </Text>
-                            <Text style={[styles.statValue, { color: theme.text }]}>
-                                ₹{investmentStats.totalValue.toLocaleString()}
-                            </Text>
+
+                            <View style={styles.statsRow}>
+                                <View style={styles.statItem}>
+                                    <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+                                        Daily Limit
+                                    </Text>
+                                    <Text style={[styles.statValue, { color: theme.text }]}>
+                                        ₹{spendingStats.dailyLimit.toFixed(0)}
+                                    </Text>
+                                </View>
+                                <View style={styles.statItem}>
+                                    <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+                                        Spent Today
+                                    </Text>
+                                    <Text style={[styles.statValue, { color: theme.text }]}>
+                                        ₹{spendingStats.todaySpent.toFixed(0)}
+                                    </Text>
+                                </View>
+                                <View style={styles.statItem}>
+                                    <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+                                        Remaining
+                                    </Text>
+                                    <Text
+                                        style={[
+                                            styles.statValue,
+                                            {
+                                                color:
+                                                    spendingStats.remainingToday >= 0 ? "#4CAF50" : "#F44336",
+                                            },
+                                        ]}
+                                    >
+                                        ₹{Math.abs(spendingStats.remainingToday).toFixed(0)}
+                                    </Text>
+                                </View>
+                            </View>
                         </View>
-                        <View style={styles.statItem}>
-                            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-                                Return
-                            </Text>
-                            <Text
-                                style={[
-                                    styles.statValue,
-                                    {
-                                        color:
-                                            investmentStats.returnPercentage >= 0 ? "#4CAF50" : "#F44336",
-                                    },
-                                ]}
-                            >
-                                {investmentStats.returnPercentage >= 0 ? "+" : ""}
-                                {investmentStats.returnPercentage.toFixed(1)}%
-                            </Text>
-                        </View>
-                    </View>
+                    </TouchableOpacity>
                 </View>
-            </TouchableOpacity>
 
-            {/* Spending Advisor Agent Card */}
-            <TouchableOpacity
-                style={[styles.agentCard, { backgroundColor: theme.cardBackground }]}
-                onPress={() => navigation.navigate("SpendingAdvisor")}
-                activeOpacity={0.7}
-            >
-                <LinearGradient
-                    colors={["#2196F3", "#1976D2"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.agentIconContainer}
-                >
-                    <Feather name="dollar-sign" size={32} color="#fff" />
-                </LinearGradient>
-
-                <View style={styles.agentContent}>
-                    <View style={styles.agentHeader}>
-                        <Text style={[styles.agentTitle, { color: theme.text }]}>
-                            Spending Advisor
-                        </Text>
-                        <Feather name="chevron-right" size={24} color={theme.textSecondary} />
-                    </View>
-                    <Text style={[styles.agentDescription, { color: theme.textSecondary }]}>
-                        Smart daily spending recommendations and budget insights
+                {/* Info Section */}
+                <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
+                    <Feather name="info" size={20} color={theme.link} />
+                    <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                        These AI agents analyze your financial data to provide personalized
+                        recommendations. Tap on each agent to see detailed insights and take action.
                     </Text>
-
-                    <View style={styles.statsRow}>
-                        <View style={styles.statItem}>
-                            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-                                Daily Limit
-                            </Text>
-                            <Text style={[styles.statValue, { color: theme.text }]}>
-                                ₹{spendingStats.dailyLimit.toFixed(0)}
-                            </Text>
-                        </View>
-                        <View style={styles.statItem}>
-                            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-                                Spent Today
-                            </Text>
-                            <Text style={[styles.statValue, { color: theme.text }]}>
-                                ₹{spendingStats.todaySpent.toFixed(0)}
-                            </Text>
-                        </View>
-                        <View style={styles.statItem}>
-                            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-                                Remaining
-                            </Text>
-                            <Text
-                                style={[
-                                    styles.statValue,
-                                    {
-                                        color:
-                                            spendingStats.remainingToday >= 0 ? "#4CAF50" : "#F44336",
-                                    },
-                                ]}
-                            >
-                                ₹{Math.abs(spendingStats.remainingToday).toFixed(0)}
-                            </Text>
-                        </View>
-                    </View>
                 </View>
-            </TouchableOpacity>
-
-            {/* Info Section */}
-            <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
-                <Feather name="info" size={20} color={theme.link} />
-                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                    These AI agents analyze your financial data to provide personalized
-                    recommendations. Tap on each agent to see detailed insights and take action.
-                </Text>
-            </View>
+            </AdaptiveContainer>
         </ScrollView>
     );
 }
@@ -347,5 +358,17 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginLeft: Spacing.sm,
         lineHeight: 20,
+    },
+    agentsGrid: {
+        flexDirection: "column",
+        gap: Spacing.md,
+    },
+    agentsGridDesktop: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+    },
+    agentCardDesktop: {
+        flex: 1,
+        minWidth: 350,
     },
 });

@@ -15,6 +15,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Button } from "@/components/Button";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { Spacing, BorderRadius } from "@/constants/theme";
@@ -74,145 +75,147 @@ export default function RegisterScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <Image
-            source={require("../../assets/images/icon.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <ThemedText type="h2" style={styles.title}>
-            Create Account
-          </ThemedText>
-          <ThemedText
-            type="body"
-            style={[styles.subtitle, { color: theme.textSecondary }]}
-          >
-            Start your financial journey today
-          </ThemedText>
-        </View>
-
-        <View style={styles.form}>
-          {error ? (
-            <View
-              style={[
-                styles.errorContainer,
-                { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
-              ]}
+        <AdaptiveContainer>
+          <View style={styles.header}>
+            <Image
+              source={require("../../assets/images/icon.png")}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <ThemedText type="h2" style={styles.title}>
+              Create Account
+            </ThemedText>
+            <ThemedText
+              type="body"
+              style={[styles.subtitle, { color: theme.textSecondary }]}
             >
-              <ThemedText
+              Start your financial journey today
+            </ThemedText>
+          </View>
+
+          <View style={styles.form}>
+            {error ? (
+              <View
                 style={[
-                  styles.errorText,
-                  { color: isDark ? "#EF9A9A" : "#C62828" },
+                  styles.errorContainer,
+                  { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
                 ]}
               >
-                {error}
+                <ThemedText
+                  style={[
+                    styles.errorText,
+                    { color: isDark ? "#EF9A9A" : "#C62828" },
+                  ]}
+                >
+                  {error}
+                </ThemedText>
+              </View>
+            ) : null}
+
+            <View style={styles.inputContainer}>
+              <ThemedText type="small" style={styles.label}>
+                Full Name
               </ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: theme.inputBackground,
+                    color: theme.text,
+                    borderColor: theme.border,
+                  },
+                ]}
+                placeholder="Enter your name"
+                placeholderTextColor={theme.textSecondary}
+                value={name}
+                onChangeText={setName}
+                autoCapitalize="words"
+              />
             </View>
-          ) : null}
 
-          <View style={styles.inputContainer}>
-            <ThemedText type="small" style={styles.label}>
-              Full Name
-            </ThemedText>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.inputBackground,
-                  color: theme.text,
-                  borderColor: theme.border,
-                },
-              ]}
-              placeholder="Enter your name"
-              placeholderTextColor={theme.textSecondary}
-              value={name}
-              onChangeText={setName}
-              autoCapitalize="words"
-            />
+            <View style={styles.inputContainer}>
+              <ThemedText type="small" style={styles.label}>
+                Email
+              </ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: theme.inputBackground,
+                    color: theme.text,
+                    borderColor: theme.border,
+                  },
+                ]}
+                placeholder="Enter your email"
+                placeholderTextColor={theme.textSecondary}
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <ThemedText type="small" style={styles.label}>
+                Password
+              </ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: theme.inputBackground,
+                    color: theme.text,
+                    borderColor: theme.border,
+                  },
+                ]}
+                placeholder="Create a password"
+                placeholderTextColor={theme.textSecondary}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <ThemedText type="small" style={styles.label}>
+                Confirm Password
+              </ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: theme.inputBackground,
+                    color: theme.text,
+                    borderColor: theme.border,
+                  },
+                ]}
+                placeholder="Confirm your password"
+                placeholderTextColor={theme.textSecondary}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry
+              />
+            </View>
+
+            <Button onPress={handleRegister} disabled={isLoading}>
+              {isLoading ? (
+                <ActivityIndicator color="#FFFFFF" size="small" />
+              ) : (
+                "Create Account"
+              )}
+            </Button>
+
+            <View style={styles.footer}>
+              <ThemedText type="body" style={{ color: theme.textSecondary }}>
+                Already have an account?{" "}
+              </ThemedText>
+              <Pressable onPress={() => navigation.navigate("Login")}>
+                <ThemedText type="link">Sign In</ThemedText>
+              </Pressable>
+            </View>
           </View>
-
-          <View style={styles.inputContainer}>
-            <ThemedText type="small" style={styles.label}>
-              Email
-            </ThemedText>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.inputBackground,
-                  color: theme.text,
-                  borderColor: theme.border,
-                },
-              ]}
-              placeholder="Enter your email"
-              placeholderTextColor={theme.textSecondary}
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <ThemedText type="small" style={styles.label}>
-              Password
-            </ThemedText>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.inputBackground,
-                  color: theme.text,
-                  borderColor: theme.border,
-                },
-              ]}
-              placeholder="Create a password"
-              placeholderTextColor={theme.textSecondary}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <ThemedText type="small" style={styles.label}>
-              Confirm Password
-            </ThemedText>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.inputBackground,
-                  color: theme.text,
-                  borderColor: theme.border,
-                },
-              ]}
-              placeholder="Confirm your password"
-              placeholderTextColor={theme.textSecondary}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry
-            />
-          </View>
-
-          <Button onPress={handleRegister} disabled={isLoading}>
-            {isLoading ? (
-              <ActivityIndicator color="#FFFFFF" size="small" />
-            ) : (
-              "Create Account"
-            )}
-          </Button>
-
-          <View style={styles.footer}>
-            <ThemedText type="body" style={{ color: theme.textSecondary }}>
-              Already have an account?{" "}
-            </ThemedText>
-            <Pressable onPress={() => navigation.navigate("Login")}>
-              <ThemedText type="link">Sign In</ThemedText>
-            </Pressable>
-          </View>
-        </View>
+        </AdaptiveContainer>
       </KeyboardAwareScrollViewCompat>
     </ThemedView>
   );

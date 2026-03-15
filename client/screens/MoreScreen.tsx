@@ -14,6 +14,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
 import { MoreStackParamList } from "@/navigation/MoreStackNavigator";
 import { createTestData, clearAllData } from "@/lib/test-data";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 type NavigationProp = NativeStackNavigationProp<MoreStackParamList>;
 
@@ -168,177 +169,179 @@ export default function MoreScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <Pressable
-          onPress={() => navigation.navigate("Profile")}
-          style={[
-            styles.profileCard,
-            { backgroundColor: theme.backgroundDefault },
-          ]}
-        >
-          <View style={[styles.avatar, { backgroundColor: theme.link + "20" }]}>
-            <Feather name="user" size={28} color={theme.link} />
-          </View>
-          <View style={styles.profileInfo}>
-            <ThemedText type="body" style={styles.profileName}>
-              {user?.name || "User"}
+        <AdaptiveContainer>
+          <Pressable
+            onPress={() => navigation.navigate("Profile")}
+            style={[
+              styles.profileCard,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
+          >
+            <View style={[styles.avatar, { backgroundColor: theme.link + "20" }]}>
+              <Feather name="user" size={28} color={theme.link} />
+            </View>
+            <View style={styles.profileInfo}>
+              <ThemedText type="body" style={styles.profileName}>
+                {user?.name || "User"}
+              </ThemedText>
+              <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                {user?.email || "View profile"}
+              </ThemedText>
+            </View>
+            <Feather name="chevron-right" size={20} color={theme.textSecondary} />
+          </Pressable>
+
+          <View style={styles.section}>
+            <ThemedText
+              type="small"
+              style={[styles.sectionTitle, { color: theme.textSecondary }]}
+            >
+              Finance
             </ThemedText>
+            <View
+              style={[
+                styles.menuGroup,
+                { backgroundColor: theme.backgroundDefault },
+              ]}
+            >
+              <MenuItem
+                icon="credit-card"
+                label="Accounts & Cards"
+                onPress={() => navigation.navigate("Accounts")}
+              />
+              <View style={[styles.divider, { backgroundColor: theme.border }]} />
+              <MenuItem
+                icon="file-text"
+                label="Bills & Reminders"
+                onPress={() => navigation.navigate("Bills")}
+              />
+              <View style={[styles.divider, { backgroundColor: theme.border }]} />
+              <MenuItem
+                icon="bar-chart-2"
+                label="Reports & Analytics"
+                onPress={() => navigation.navigate("Reports")}
+              />
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <ThemedText
+              type="small"
+              style={[styles.sectionTitle, { color: theme.textSecondary }]}
+            >
+              App
+            </ThemedText>
+            <View
+              style={[
+                styles.menuGroup,
+                { backgroundColor: theme.backgroundDefault },
+              ]}
+            >
+              <MenuItem
+                icon="settings"
+                label="Settings"
+                onPress={() => navigation.navigate("Settings")}
+              />
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <ThemedText
+              type="small"
+              style={[styles.sectionTitle, { color: theme.textSecondary }]}
+            >
+              Developer Tools
+            </ThemedText>
+            <View
+              style={[
+                styles.menuGroup,
+                { backgroundColor: theme.backgroundDefault },
+              ]}
+            >
+              <Pressable
+                onPress={handleLoadTestData}
+                disabled={isLoadingData}
+                style={({ pressed }) => [
+                  styles.menuItem,
+                  {
+                    backgroundColor: pressed ? theme.backgroundSecondary : "transparent",
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.menuIcon,
+                    { backgroundColor: "#4CAF50" + "15" },
+                  ]}
+                >
+                  {isLoadingData ? (
+                    <ActivityIndicator size="small" color="#4CAF50" />
+                  ) : (
+                    <Feather name="database" size={20} color="#4CAF50" />
+                  )}
+                </View>
+                <ThemedText type="body" style={styles.menuLabel}>
+                  Load Test Data
+                </ThemedText>
+                <View style={styles.menuArrow}>
+                  <Feather name="chevron-right" size={20} color={theme.textSecondary} />
+                </View>
+              </Pressable>
+              <View style={[styles.divider, { backgroundColor: theme.border }]} />
+              <Pressable
+                onPress={handleClearData}
+                disabled={isLoadingData}
+                style={({ pressed }) => [
+                  styles.menuItem,
+                  {
+                    backgroundColor: pressed ? theme.backgroundSecondary : "transparent",
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.menuIcon,
+                    { backgroundColor: FinanceColors.expense + "15" },
+                  ]}
+                >
+                  {isLoadingData ? (
+                    <ActivityIndicator size="small" color={FinanceColors.expense} />
+                  ) : (
+                    <Feather name="trash-2" size={20} color={FinanceColors.expense} />
+                  )}
+                </View>
+                <ThemedText type="body" style={styles.menuLabel}>
+                  Clear All Data
+                </ThemedText>
+                <View style={styles.menuArrow}>
+                  <Feather name="chevron-right" size={20} color={theme.textSecondary} />
+                </View>
+              </Pressable>
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <View
+              style={[
+                styles.menuGroup,
+                { backgroundColor: theme.backgroundDefault },
+              ]}
+            >
+              <MenuItem
+                icon="log-out"
+                label="Log Out"
+                onPress={handleLogout}
+                color={FinanceColors.expense}
+              />
+            </View>
+          </View>
+
+          <View style={styles.footer}>
             <ThemedText type="small" style={{ color: theme.textSecondary }}>
-              {user?.email || "View profile"}
+              FinTrack v1.0.0
             </ThemedText>
           </View>
-          <Feather name="chevron-right" size={20} color={theme.textSecondary} />
-        </Pressable>
-
-        <View style={styles.section}>
-          <ThemedText
-            type="small"
-            style={[styles.sectionTitle, { color: theme.textSecondary }]}
-          >
-            Finance
-          </ThemedText>
-          <View
-            style={[
-              styles.menuGroup,
-              { backgroundColor: theme.backgroundDefault },
-            ]}
-          >
-            <MenuItem
-              icon="credit-card"
-              label="Accounts & Cards"
-              onPress={() => navigation.navigate("Accounts")}
-            />
-            <View style={[styles.divider, { backgroundColor: theme.border }]} />
-            <MenuItem
-              icon="file-text"
-              label="Bills & Reminders"
-              onPress={() => navigation.navigate("Bills")}
-            />
-            <View style={[styles.divider, { backgroundColor: theme.border }]} />
-            <MenuItem
-              icon="bar-chart-2"
-              label="Reports & Analytics"
-              onPress={() => navigation.navigate("Reports")}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText
-            type="small"
-            style={[styles.sectionTitle, { color: theme.textSecondary }]}
-          >
-            App
-          </ThemedText>
-          <View
-            style={[
-              styles.menuGroup,
-              { backgroundColor: theme.backgroundDefault },
-            ]}
-          >
-            <MenuItem
-              icon="settings"
-              label="Settings"
-              onPress={() => navigation.navigate("Settings")}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText
-            type="small"
-            style={[styles.sectionTitle, { color: theme.textSecondary }]}
-          >
-            Developer Tools
-          </ThemedText>
-          <View
-            style={[
-              styles.menuGroup,
-              { backgroundColor: theme.backgroundDefault },
-            ]}
-          >
-            <Pressable
-              onPress={handleLoadTestData}
-              disabled={isLoadingData}
-              style={({ pressed }) => [
-                styles.menuItem,
-                {
-                  backgroundColor: pressed ? theme.backgroundSecondary : "transparent",
-                },
-              ]}
-            >
-              <View
-                style={[
-                  styles.menuIcon,
-                  { backgroundColor: "#4CAF50" + "15" },
-                ]}
-              >
-                {isLoadingData ? (
-                  <ActivityIndicator size="small" color="#4CAF50" />
-                ) : (
-                  <Feather name="database" size={20} color="#4CAF50" />
-                )}
-              </View>
-              <ThemedText type="body" style={styles.menuLabel}>
-                Load Test Data
-              </ThemedText>
-              <View style={styles.menuArrow}>
-                <Feather name="chevron-right" size={20} color={theme.textSecondary} />
-              </View>
-            </Pressable>
-            <View style={[styles.divider, { backgroundColor: theme.border }]} />
-            <Pressable
-              onPress={handleClearData}
-              disabled={isLoadingData}
-              style={({ pressed }) => [
-                styles.menuItem,
-                {
-                  backgroundColor: pressed ? theme.backgroundSecondary : "transparent",
-                },
-              ]}
-            >
-              <View
-                style={[
-                  styles.menuIcon,
-                  { backgroundColor: FinanceColors.expense + "15" },
-                ]}
-              >
-                {isLoadingData ? (
-                  <ActivityIndicator size="small" color={FinanceColors.expense} />
-                ) : (
-                  <Feather name="trash-2" size={20} color={FinanceColors.expense} />
-                )}
-              </View>
-              <ThemedText type="body" style={styles.menuLabel}>
-                Clear All Data
-              </ThemedText>
-              <View style={styles.menuArrow}>
-                <Feather name="chevron-right" size={20} color={theme.textSecondary} />
-              </View>
-            </Pressable>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <View
-            style={[
-              styles.menuGroup,
-              { backgroundColor: theme.backgroundDefault },
-            ]}
-          >
-            <MenuItem
-              icon="log-out"
-              label="Log Out"
-              onPress={handleLogout}
-              color={FinanceColors.expense}
-            />
-          </View>
-        </View>
-
-        <View style={styles.footer}>
-          <ThemedText type="small" style={{ color: theme.textSecondary }}>
-            FinTrack v1.0.0
-          </ThemedText>
-        </View>
+        </AdaptiveContainer>
       </ScrollView>
     </ThemedView>
   );

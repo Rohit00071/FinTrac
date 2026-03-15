@@ -15,6 +15,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Button } from "@/components/Button";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { Spacing, BorderRadius, Colors } from "@/constants/theme";
@@ -64,103 +65,139 @@ export default function LoginScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <Image
-            source={require("../../assets/images/icon.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <ThemedText type="h2" style={styles.title}>
-            Welcome to FinTrack
-          </ThemedText>
-          <ThemedText
-            type="body"
-            style={[styles.subtitle, { color: theme.textSecondary }]}
-          >
-            Track your finances, reach your goals
-          </ThemedText>
-        </View>
-
-        <View style={styles.form}>
-          {error ? (
-            <View
-              style={[
-                styles.errorContainer,
-                { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
-              ]}
+        <AdaptiveContainer>
+          <View style={styles.header}>
+            <Image
+              source={require("../../assets/images/icon.png")}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <ThemedText type="h2" style={styles.title}>
+              Welcome to FinTrack
+            </ThemedText>
+            <ThemedText
+              type="body"
+              style={[styles.subtitle, { color: theme.textSecondary }]}
             >
-              <ThemedText
+              Track your finances, reach your goals
+            </ThemedText>
+          </View>
+
+          <View style={styles.form}>
+            {/* Mode Switcher */}
+            <View style={[styles.tabContainer, { backgroundColor: theme.backgroundSecondary }]}>
+              <Pressable 
+                style={[styles.tab, { backgroundColor: theme.cardBackground }]}
+                onPress={() => {}}
+              >
+                <ThemedText style={{ fontWeight: "600", color: theme.link }}>Login</ThemedText>
+              </Pressable>
+              <Pressable 
+                style={styles.tab}
+                onPress={() => navigation.navigate("Register")}
+              >
+                <ThemedText style={{ color: theme.textSecondary }}>Sign Up</ThemedText>
+              </Pressable>
+            </View>
+
+            {error ? (
+              <View
                 style={[
-                  styles.errorText,
-                  { color: isDark ? "#EF9A9A" : "#C62828" },
+                  styles.errorContainer,
+                  { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
                 ]}
               >
-                {error}
+                <ThemedText
+                  style={[
+                    styles.errorText,
+                    { color: isDark ? "#EF9A9A" : "#C62828" },
+                  ]}
+                >
+                  {error}
+                </ThemedText>
+              </View>
+            ) : null}
+
+            <View style={styles.inputContainer}>
+              <ThemedText type="small" style={styles.label}>
+                Email
               </ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: theme.inputBackground,
+                    color: theme.text,
+                    borderColor: theme.border,
+                  },
+                ]}
+                placeholder="Enter your email"
+                placeholderTextColor={theme.textSecondary}
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+              />
             </View>
-          ) : null}
 
-          <View style={styles.inputContainer}>
-            <ThemedText type="small" style={styles.label}>
-              Email
-            </ThemedText>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.inputBackground,
-                  color: theme.text,
-                  borderColor: theme.border,
-                },
-              ]}
-              placeholder="Enter your email"
-              placeholderTextColor={theme.textSecondary}
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-            />
+            <View style={styles.inputContainer}>
+              <ThemedText type="small" style={styles.label}>
+                Password
+              </ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: theme.inputBackground,
+                    color: theme.text,
+                    borderColor: theme.border,
+                  },
+                ]}
+                placeholder="Enter your password"
+                placeholderTextColor={theme.textSecondary}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+            </View>
+
+            <Button onPress={handleLogin} disabled={isLoading}>
+              {isLoading ? (
+                <ActivityIndicator color="#FFFFFF" size="small" />
+              ) : (
+                "Sign In"
+              )}
+            </Button>
+
+            {/* Quick Login Section */}
+            <View style={styles.quickLoginSection}>
+              <ThemedText type="small" style={[styles.quickLoginTitle, { color: theme.textSecondary }]}>
+                QUICK LOGIN (DEMO)
+              </ThemedText>
+              <View style={styles.demoButtonsContainer}>
+                <Pressable 
+                  style={[styles.demoBtn, { borderColor: theme.border }]}
+                  onPress={() => { setEmail("rohit@fintrac.com"); setPassword("rohit123"); }}
+                >
+                  <ThemedText style={styles.demoBtnText}>Rohit</ThemedText>
+                </Pressable>
+                <Pressable 
+                  style={[styles.demoBtn, { borderColor: theme.border }]}
+                  onPress={() => { setEmail("priya@fintrac.com"); setPassword("priya456"); }}
+                >
+                  <ThemedText style={styles.demoBtnText}>Priya</ThemedText>
+                </Pressable>
+                <Pressable 
+                  style={[styles.demoBtn, { borderColor: theme.border }]}
+                  onPress={() => { setEmail("vikram@fintrac.com"); setPassword("vikram789"); }}
+                >
+                  <ThemedText style={styles.demoBtnText}>Vikram</ThemedText>
+                </Pressable>
+              </View>
+            </View>
           </View>
-
-          <View style={styles.inputContainer}>
-            <ThemedText type="small" style={styles.label}>
-              Password
-            </ThemedText>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.inputBackground,
-                  color: theme.text,
-                  borderColor: theme.border,
-                },
-              ]}
-              placeholder="Enter your password"
-              placeholderTextColor={theme.textSecondary}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-          </View>
-
-          <Button onPress={handleLogin} disabled={isLoading}>
-            {isLoading ? (
-              <ActivityIndicator color="#FFFFFF" size="small" />
-            ) : (
-              "Sign In"
-            )}
-          </Button>
-
-          <View style={styles.footer}>
-            <ThemedText type="body" style={{ color: theme.textSecondary }}>
-              Don&apos;t have an account?{" "}
-            </ThemedText>
-            <Pressable onPress={() => navigation.navigate("Register")}>
-              <ThemedText type="link">Sign Up</ThemedText>
-            </Pressable>
-          </View>
-        </View>
+        </AdaptiveContainer>
       </KeyboardAwareScrollViewCompat>
     </ThemedView>
   );
@@ -219,5 +256,45 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginTop: Spacing.xl,
+  },
+  tabContainer: {
+    flexDirection: "row",
+    padding: 4,
+    borderRadius: BorderRadius.sm,
+    marginBottom: Spacing.lg,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: "center",
+    borderRadius: BorderRadius.sm - 2,
+  },
+  quickLoginSection: {
+    marginTop: Spacing.xl,
+    paddingTop: Spacing.xl,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0,0,0,0.05)",
+  },
+  quickLoginTitle: {
+    textAlign: "center",
+    marginBottom: Spacing.md,
+    fontWeight: "600",
+    letterSpacing: 1,
+  },
+  demoButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: Spacing.sm,
+  },
+  demoBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderRadius: BorderRadius.sm,
+    alignItems: "center",
+  },
+  demoBtnText: {
+    fontSize: 14,
+    fontWeight: "500",
   },
 });

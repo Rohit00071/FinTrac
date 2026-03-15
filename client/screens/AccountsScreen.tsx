@@ -21,6 +21,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
 import { formatCurrency } from "@/lib/formatters";
 import { AccountType, ACCOUNT_CONFIG } from "@/types/finance";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 const ACCOUNT_TYPES = Object.entries(ACCOUNT_CONFIG) as [
   AccountType,
@@ -106,89 +107,91 @@ export default function AccountsScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
         }
       >
-        <View
-          style={[
-            styles.totalCard,
-            { backgroundColor: theme.backgroundDefault },
-          ]}
-        >
-          <ThemedText type="small" style={{ color: theme.textSecondary }}>
-            Total Balance
-          </ThemedText>
-          <ThemedText
+        <AdaptiveContainer>
+          <View
             style={[
-              styles.totalBalance,
-              {
-                color:
-                  totalBalance >= 0
-                    ? FinanceColors.income
-                    : FinanceColors.expense,
-              },
+              styles.totalCard,
+              { backgroundColor: theme.backgroundDefault },
             ]}
           >
-            {formatCurrency(totalBalance)}
-          </ThemedText>
-        </View>
-
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <ThemedText type="h4">Your Accounts</ThemedText>
-            <Pressable onPress={() => setShowAddModal(true)}>
-              <Feather name="plus" size={24} color={theme.link} />
-            </Pressable>
-          </View>
-
-          {accounts.map((account) => (
-            <Pressable
-              key={account.id}
-              onLongPress={() => handleDeleteAccount(account.id, account.name)}
+            <ThemedText type="small" style={{ color: theme.textSecondary }}>
+              Total Balance
+            </ThemedText>
+            <ThemedText
               style={[
-                styles.accountCard,
-                { backgroundColor: theme.backgroundDefault },
-              ]}
-            >
-              <View
-                style={[
-                  styles.accountIcon,
-                  { backgroundColor: account.color + "20" },
-                ]}
-              >
-                <Feather
-                  name={account.icon as any}
-                  size={24}
-                  color={account.color}
-                />
-              </View>
-              <View style={styles.accountInfo}>
-                <ThemedText type="body" style={{ fontWeight: "600" }}>
-                  {account.name}
-                </ThemedText>
-                <ThemedText type="small" style={{ color: theme.textSecondary }}>
-                  {ACCOUNT_CONFIG[account.type].label}
-                </ThemedText>
-              </View>
-              <ThemedText
-                type="body"
-                style={{
-                  fontWeight: "600",
+                styles.totalBalance,
+                {
                   color:
-                    account.balance >= 0
+                    totalBalance >= 0
                       ? FinanceColors.income
                       : FinanceColors.expense,
-                }}
-              >
-                {formatCurrency(account.balance)}
-              </ThemedText>
-            </Pressable>
-          ))}
-        </View>
+                },
+              ]}
+            >
+              {formatCurrency(totalBalance)}
+            </ThemedText>
+          </View>
 
-        <ThemedText
-          type="small"
-          style={[styles.hint, { color: theme.textSecondary }]}
-        >
-          Long press on an account to delete it
-        </ThemedText>
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <ThemedText type="h4">Your Accounts</ThemedText>
+              <Pressable onPress={() => setShowAddModal(true)}>
+                <Feather name="plus" size={24} color={theme.link} />
+              </Pressable>
+            </View>
+
+            {accounts.map((account) => (
+              <Pressable
+                key={account.id}
+                onLongPress={() => handleDeleteAccount(account.id, account.name)}
+                style={[
+                  styles.accountCard,
+                  { backgroundColor: theme.backgroundDefault },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.accountIcon,
+                    { backgroundColor: account.color + "20" },
+                  ]}
+                >
+                  <Feather
+                    name={account.icon as any}
+                    size={24}
+                    color={account.color}
+                  />
+                </View>
+                <View style={styles.accountInfo}>
+                  <ThemedText type="body" style={{ fontWeight: "600" }}>
+                    {account.name}
+                  </ThemedText>
+                  <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                    {ACCOUNT_CONFIG[account.type].label}
+                  </ThemedText>
+                </View>
+                <ThemedText
+                  type="body"
+                  style={{
+                    fontWeight: "600",
+                    color:
+                      account.balance >= 0
+                        ? FinanceColors.income
+                        : FinanceColors.expense,
+                  }}
+                >
+                  {formatCurrency(account.balance)}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </View>
+
+          <ThemedText
+            type="small"
+            style={[styles.hint, { color: theme.textSecondary }]}
+          >
+            Long press on an account to delete it
+          </ThemedText>
+        </AdaptiveContainer>
       </ScrollView>
 
       <Modal

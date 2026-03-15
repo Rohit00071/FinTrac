@@ -21,6 +21,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
 import { getCurrentMonth, formatMonth, formatCurrency } from "@/lib/formatters";
 import { BudgetStackParamList } from "@/navigation/BudgetStackNavigator";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 type NavigationProp = NativeStackNavigationProp<BudgetStackParamList>;
 
@@ -72,122 +73,124 @@ export default function BudgetScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
         }
       >
-        <View style={styles.monthSelector}>
-          <Pressable onPress={() => navigateMonth(-1)} style={styles.navButton}>
-            <Feather name="chevron-left" size={24} color={theme.text} />
-          </Pressable>
-          <ThemedText type="h4">{formatMonth(currentMonth)}</ThemedText>
-          <Pressable onPress={() => navigateMonth(1)} style={styles.navButton}>
-            <Feather name="chevron-right" size={24} color={theme.text} />
-          </Pressable>
-        </View>
+        <AdaptiveContainer>
+          <View style={styles.monthSelector}>
+            <Pressable onPress={() => navigateMonth(-1)} style={styles.navButton}>
+              <Feather name="chevron-left" size={24} color={theme.text} />
+            </Pressable>
+            <ThemedText type="h4">{formatMonth(currentMonth)}</ThemedText>
+            <Pressable onPress={() => navigateMonth(1)} style={styles.navButton}>
+              <Feather name="chevron-right" size={24} color={theme.text} />
+            </Pressable>
+          </View>
 
-        {monthBudgets.length > 0 ? (
-          <>
-            <View
-              style={[
-                styles.summaryCard,
-                { backgroundColor: theme.backgroundDefault },
-              ]}
-            >
-              <View style={styles.summaryRow}>
-                <View style={styles.summaryItem}>
-                  <ThemedText
-                    type="small"
-                    style={{ color: theme.textSecondary }}
-                  >
-                    Total Budget
-                  </ThemedText>
-                  <ThemedText type="h4">
-                    {formatCurrency(totalBudget)}
-                  </ThemedText>
-                </View>
-                <View style={styles.summaryDivider} />
-                <View style={styles.summaryItem}>
-                  <ThemedText
-                    type="small"
-                    style={{ color: theme.textSecondary }}
-                  >
-                    Total Spent
-                  </ThemedText>
-                  <ThemedText
-                    type="h4"
-                    style={{
-                      color:
-                        totalSpent > totalBudget
-                          ? FinanceColors.expense
-                          : theme.text,
-                    }}
-                  >
-                    {formatCurrency(totalSpent)}
-                  </ThemedText>
-                </View>
-              </View>
-
+          {monthBudgets.length > 0 ? (
+            <>
               <View
                 style={[
-                  styles.progressBackground,
-                  { backgroundColor: theme.border },
+                  styles.summaryCard,
+                  { backgroundColor: theme.backgroundDefault },
                 ]}
               >
+                <View style={styles.summaryRow}>
+                  <View style={styles.summaryItem}>
+                    <ThemedText
+                      type="small"
+                      style={{ color: theme.textSecondary }}
+                    >
+                      Total Budget
+                    </ThemedText>
+                    <ThemedText type="h4">
+                      {formatCurrency(totalBudget)}
+                    </ThemedText>
+                  </View>
+                  <View style={styles.summaryDivider} />
+                  <View style={styles.summaryItem}>
+                    <ThemedText
+                      type="small"
+                      style={{ color: theme.textSecondary }}
+                    >
+                      Total Spent
+                    </ThemedText>
+                    <ThemedText
+                      type="h4"
+                      style={{
+                        color:
+                          totalSpent > totalBudget
+                            ? FinanceColors.expense
+                            : theme.text,
+                      }}
+                    >
+                      {formatCurrency(totalSpent)}
+                    </ThemedText>
+                  </View>
+                </View>
+
                 <View
                   style={[
-                    styles.progressFill,
-                    {
-                      backgroundColor:
-                        totalSpent > totalBudget
-                          ? FinanceColors.expense
-                          : FinanceColors.income,
-                      width: `${Math.min((totalSpent / totalBudget) * 100, 100)}%`,
-                    },
+                    styles.progressBackground,
+                    { backgroundColor: theme.border },
                   ]}
-                />
+                >
+                  <View
+                    style={[
+                      styles.progressFill,
+                      {
+                        backgroundColor:
+                          totalSpent > totalBudget
+                            ? FinanceColors.expense
+                            : FinanceColors.income,
+                        width: `${Math.min((totalSpent / totalBudget) * 100, 100)}%`,
+                      },
+                    ]}
+                  />
+                </View>
+
+                <ThemedText
+                  type="small"
+                  style={{
+                    color:
+                      totalBudget - totalSpent >= 0
+                        ? FinanceColors.income
+                        : FinanceColors.expense,
+                    textAlign: "center",
+                    marginTop: Spacing.sm,
+                    fontWeight: "600",
+                  }}
+                >
+                  {totalBudget - totalSpent >= 0
+                    ? `${formatCurrency(totalBudget - totalSpent)} remaining`
+                    : `${formatCurrency(Math.abs(totalBudget - totalSpent))} over budget`}
+                </ThemedText>
               </View>
 
-              <ThemedText
-                type="small"
-                style={{
-                  color:
-                    totalBudget - totalSpent >= 0
-                      ? FinanceColors.income
-                      : FinanceColors.expense,
-                  textAlign: "center",
-                  marginTop: Spacing.sm,
-                  fontWeight: "600",
-                }}
-              >
-                {totalBudget - totalSpent >= 0
-                  ? `${formatCurrency(totalBudget - totalSpent)} remaining`
-                  : `${formatCurrency(Math.abs(totalBudget - totalSpent))} over budget`}
-              </ThemedText>
-            </View>
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <ThemedText type="h4">Category Budgets</ThemedText>
+                  <Pressable onPress={handleAddBudget}>
+                    <Feather name="plus" size={24} color={theme.link} />
+                  </Pressable>
+                </View>
 
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <ThemedText type="h4">Category Budgets</ThemedText>
-                <Pressable onPress={handleAddBudget}>
-                  <Feather name="plus" size={24} color={theme.link} />
-                </Pressable>
+                {monthBudgets.map((budget) => (
+                  <BudgetProgress
+                    key={budget.id}
+                    budget={budget}
+                    onPress={() => handleEditBudget(budget.id, budget.category)}
+                  />
+                ))}
               </View>
-
-              {monthBudgets.map((budget) => (
-                <BudgetProgress
-                  key={budget.id}
-                  budget={budget}
-                  onPress={() => handleEditBudget(budget.id, budget.category)}
-                />
-              ))}
-            </View>
-          </>
-        ) : (
-          <EmptyState
-            icon="target"
-            title="No Budget Set"
-            description="Set monthly budgets for each category to track your spending and stay on target."
-            buttonText="Create Budget"
-            onButtonPress={handleAddBudget}
-          />
-        )}
+            </>
+          ) : (
+            <EmptyState
+              icon="target"
+              title="No Budget Set"
+              description="Set monthly budgets for each category to track your spending and stay on target."
+              buttonText="Create Budget"
+              onButtonPress={handleAddBudget}
+            />
+          )}
+        </AdaptiveContainer>
       </ScrollView>
     </ThemedView>
   );

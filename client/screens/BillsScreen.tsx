@@ -22,6 +22,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
 import { formatCurrency, formatDate, getDaysRemaining } from "@/lib/formatters";
 import { CategoryType, CATEGORY_CONFIG, Bill } from "@/types/finance";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 const CATEGORIES = Object.entries(CATEGORY_CONFIG) as [
   CategoryType,
@@ -196,71 +197,73 @@ export default function BillsScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
         }
       >
-        {bills.length === 0 ? (
-          <EmptyState
-            icon="calendar"
-            title="No Bills Yet"
-            description="Add your recurring bills to get reminders before they're due."
-            buttonText="Add Bill"
-            onButtonPress={() => setShowAddModal(true)}
-          />
-        ) : (
-          <>
-            {unpaidBills.length > 0 ? (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <ThemedText type="h4">
-                    Upcoming ({unpaidBills.length})
-                  </ThemedText>
-                  <Pressable onPress={() => setShowAddModal(true)}>
-                    <Feather name="plus" size={24} color={theme.link} />
-                  </Pressable>
+        <AdaptiveContainer>
+          {bills.length === 0 ? (
+            <EmptyState
+              icon="calendar"
+              title="No Bills Yet"
+              description="Add your recurring bills to get reminders before they're due."
+              buttonText="Add Bill"
+              onButtonPress={() => setShowAddModal(true)}
+            />
+          ) : (
+            <>
+              {unpaidBills.length > 0 ? (
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <ThemedText type="h4">
+                      Upcoming ({unpaidBills.length})
+                    </ThemedText>
+                    <Pressable onPress={() => setShowAddModal(true)}>
+                      <Feather name="plus" size={24} color={theme.link} />
+                    </Pressable>
+                  </View>
+                  {unpaidBills.map(renderBillItem)}
                 </View>
-                {unpaidBills.map(renderBillItem)}
-              </View>
-            ) : (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <ThemedText type="h4">Upcoming</ThemedText>
-                  <Pressable onPress={() => setShowAddModal(true)}>
-                    <Feather name="plus" size={24} color={theme.link} />
-                  </Pressable>
+              ) : (
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <ThemedText type="h4">Upcoming</ThemedText>
+                    <Pressable onPress={() => setShowAddModal(true)}>
+                      <Feather name="plus" size={24} color={theme.link} />
+                    </Pressable>
+                  </View>
+                  <View
+                    style={[
+                      styles.emptyCard,
+                      { backgroundColor: theme.backgroundDefault },
+                    ]}
+                  >
+                    <Feather
+                      name="check"
+                      size={32}
+                      color={FinanceColors.income}
+                    />
+                    <ThemedText type="body" style={{ marginTop: Spacing.sm }}>
+                      All bills paid!
+                    </ThemedText>
+                  </View>
                 </View>
-                <View
-                  style={[
-                    styles.emptyCard,
-                    { backgroundColor: theme.backgroundDefault },
-                  ]}
-                >
-                  <Feather
-                    name="check"
-                    size={32}
-                    color={FinanceColors.income}
-                  />
-                  <ThemedText type="body" style={{ marginTop: Spacing.sm }}>
-                    All bills paid!
-                  </ThemedText>
-                </View>
-              </View>
-            )}
+              )}
 
-            {paidBills.length > 0 ? (
-              <View style={styles.section}>
-                <ThemedText type="h4" style={styles.sectionTitle}>
-                  Paid ({paidBills.length})
-                </ThemedText>
-                {paidBills.map(renderBillItem)}
-              </View>
-            ) : null}
-          </>
-        )}
+              {paidBills.length > 0 ? (
+                <View style={styles.section}>
+                  <ThemedText type="h4" style={styles.sectionTitle}>
+                    Paid ({paidBills.length})
+                  </ThemedText>
+                  {paidBills.map(renderBillItem)}
+                </View>
+              ) : null}
+            </>
+          )}
 
-        <ThemedText
-          type="small"
-          style={[styles.hint, { color: theme.textSecondary }]}
-        >
-          Tap to mark as paid. Long press to delete.
-        </ThemedText>
+          <ThemedText
+            type="small"
+            style={[styles.hint, { color: theme.textSecondary }]}
+          >
+            Tap to mark as paid. Long press to delete.
+          </ThemedText>
+        </AdaptiveContainer>
       </ScrollView>
 
       <Modal

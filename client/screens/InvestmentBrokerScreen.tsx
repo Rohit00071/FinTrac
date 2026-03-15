@@ -27,10 +27,11 @@ import {
     INVESTMENT_CONFIG,
     InvestmentType,
 } from "@/types/finance";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 export default function InvestmentBrokerScreen() {
     const { theme } = useTheme();
-    const { accounts, goals, refreshData, addTransaction } = useFinance();
+    const { accounts, goals, refreshData, addTransaction, aiAnalysis } = useFinance();
 
     const [isLoading, setIsLoading] = useState(true);
     const [investments, setInvestments] = useState<Investment[]>([]);
@@ -45,7 +46,7 @@ export default function InvestmentBrokerScreen() {
 
     useEffect(() => {
         loadData();
-    }, [accounts, goals]);
+    }, [accounts, goals, aiAnalysis]);
 
     const loadData = async () => {
         try {
@@ -53,7 +54,7 @@ export default function InvestmentBrokerScreen() {
             const settings = await aiSettingsStorage.get();
             setAutoInvest(settings.investmentBroker.autoInvest);
 
-            const broker = new InvestmentBrokerAgent(accounts, goals, settings);
+            const broker = new InvestmentBrokerAgent(aiAnalysis, settings);
 
             // Load investments
             const invs = await investmentStorage.getAll();
@@ -185,17 +186,18 @@ export default function InvestmentBrokerScreen() {
             style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
             contentContainerStyle={styles.content}
         >
-            {/* Header */}
-            <LinearGradient
-                colors={["#4CAF50", "#45a049"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.header}
-            >
-                <Feather name="trending-up" size={36} color="#fff" />
-                <Text style={styles.headerTitle}>Investment Broker</Text>
-                <Text style={styles.headerSubtitle}>AI-Powered Portfolio Management</Text>
-            </LinearGradient>
+            <AdaptiveContainer>
+                {/* Header */}
+                <LinearGradient
+                    colors={["#4CAF50", "#45a049"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.header}
+                >
+                    <Feather name="trending-up" size={36} color="#fff" />
+                    <Text style={styles.headerTitle}>Investment Broker</Text>
+                    <Text style={styles.headerSubtitle}>AI-Powered Portfolio Management</Text>
+                </LinearGradient>
 
             {/* Portfolio Overview */}
             <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
@@ -378,6 +380,7 @@ export default function InvestmentBrokerScreen() {
                     })}
                 </View>
             )}
+            </AdaptiveContainer>
         </ScrollView>
     );
 }

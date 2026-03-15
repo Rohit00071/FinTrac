@@ -18,6 +18,7 @@ import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollV
 import { useTheme } from "@/hooks/useTheme";
 import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 const GOAL_ICONS = [
   { icon: "home", label: "Home" },
@@ -102,165 +103,167 @@ export default function AddGoalScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {error ? (
-          <View
-            style={[
-              styles.errorContainer,
-              { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
-            ]}
-          >
-            <ThemedText
+        <AdaptiveContainer>
+          {error ? (
+            <View
               style={[
-                styles.errorText,
-                { color: isDark ? "#EF9A9A" : "#C62828" },
+                styles.errorContainer,
+                { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
               ]}
             >
-              {error}
+              <ThemedText
+                style={[
+                  styles.errorText,
+                  { color: isDark ? "#EF9A9A" : "#C62828" },
+                ]}
+              >
+                {error}
+              </ThemedText>
+            </View>
+          ) : null}
+
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Goal Name
             </ThemedText>
-          </View>
-        ) : null}
-
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Goal Name
-          </ThemedText>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.inputBackground,
-                color: theme.text,
-                borderColor: theme.border,
-              },
-            ]}
-            placeholder="e.g., New Car, Vacation, Emergency Fund"
-            placeholderTextColor={theme.textSecondary}
-            value={name}
-            onChangeText={setName}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Target Amount
-          </ThemedText>
-          <View
-            style={[
-              styles.amountInputContainer,
-              {
-                backgroundColor: theme.inputBackground,
-                borderColor: theme.border,
-              },
-            ]}
-          >
-            <ThemedText style={styles.currencySymbol}>$</ThemedText>
             <TextInput
-              style={[styles.amountInput, { color: theme.text }]}
-              placeholder="0.00"
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.inputBackground,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
+              ]}
+              placeholder="e.g., New Car, Vacation, Emergency Fund"
               placeholderTextColor={theme.textSecondary}
-              value={targetAmount}
-              onChangeText={setTargetAmount}
-              keyboardType="decimal-pad"
+              value={name}
+              onChangeText={setName}
             />
           </View>
-        </View>
 
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Target Date (YYYY-MM-DD)
-          </ThemedText>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.inputBackground,
-                color: theme.text,
-                borderColor: theme.border,
-              },
-            ]}
-            placeholder="2025-12-31"
-            placeholderTextColor={theme.textSecondary}
-            value={deadline}
-            onChangeText={setDeadline}
-          />
-        </View>
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Target Amount
+            </ThemedText>
+            <View
+              style={[
+                styles.amountInputContainer,
+                {
+                  backgroundColor: theme.inputBackground,
+                  borderColor: theme.border,
+                },
+              ]}
+            >
+              <ThemedText style={styles.currencySymbol}>$</ThemedText>
+              <TextInput
+                style={[styles.amountInput, { color: theme.text }]}
+                placeholder="0.00"
+                placeholderTextColor={theme.textSecondary}
+                value={targetAmount}
+                onChangeText={setTargetAmount}
+                keyboardType="decimal-pad"
+              />
+            </View>
+          </View>
 
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Icon
-          </ThemedText>
-          <View style={styles.iconGrid}>
-            {GOAL_ICONS.map((item) => (
-              <Pressable
-                key={item.icon}
-                onPress={() => setSelectedIcon(item.icon)}
-                style={[
-                  styles.iconItem,
-                  {
-                    backgroundColor:
-                      selectedIcon === item.icon
-                        ? selectedColor + "20"
-                        : theme.backgroundDefault,
-                    borderColor:
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Target Date (YYYY-MM-DD)
+            </ThemedText>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.inputBackground,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
+              ]}
+              placeholder="2025-12-31"
+              placeholderTextColor={theme.textSecondary}
+              value={deadline}
+              onChangeText={setDeadline}
+            />
+          </View>
+
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Icon
+            </ThemedText>
+            <View style={styles.iconGrid}>
+              {GOAL_ICONS.map((item) => (
+                <Pressable
+                  key={item.icon}
+                  onPress={() => setSelectedIcon(item.icon)}
+                  style={[
+                    styles.iconItem,
+                    {
+                      backgroundColor:
+                        selectedIcon === item.icon
+                          ? selectedColor + "20"
+                          : theme.backgroundDefault,
+                      borderColor:
+                        selectedIcon === item.icon
+                          ? selectedColor
+                          : "transparent",
+                      borderWidth: 2,
+                    },
+                  ]}
+                >
+                  <Feather
+                    name={item.icon as any}
+                    size={24}
+                    color={
                       selectedIcon === item.icon
                         ? selectedColor
-                        : "transparent",
-                    borderWidth: 2,
-                  },
-                ]}
-              >
-                <Feather
-                  name={item.icon as any}
-                  size={24}
-                  color={
-                    selectedIcon === item.icon
-                      ? selectedColor
-                      : theme.textSecondary
-                  }
-                />
-              </Pressable>
-            ))}
+                        : theme.textSecondary
+                    }
+                  />
+                </Pressable>
+              ))}
+            </View>
           </View>
-        </View>
 
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Color
-          </ThemedText>
-          <View style={styles.colorGrid}>
-            {GOAL_COLORS.map((color) => (
-              <Pressable
-                key={color}
-                onPress={() => setSelectedColor(color)}
-                style={[
-                  styles.colorItem,
-                  {
-                    backgroundColor: color,
-                    borderColor:
-                      selectedColor === color ? theme.text : "transparent",
-                    borderWidth: selectedColor === color ? 3 : 0,
-                  },
-                ]}
-              >
-                {selectedColor === color ? (
-                  <Feather name="check" size={20} color="#FFFFFF" />
-                ) : null}
-              </Pressable>
-            ))}
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Color
+            </ThemedText>
+            <View style={styles.colorGrid}>
+              {GOAL_COLORS.map((color) => (
+                <Pressable
+                  key={color}
+                  onPress={() => setSelectedColor(color)}
+                  style={[
+                    styles.colorItem,
+                    {
+                      backgroundColor: color,
+                      borderColor:
+                        selectedColor === color ? theme.text : "transparent",
+                      borderWidth: selectedColor === color ? 3 : 0,
+                    },
+                  ]}
+                >
+                  {selectedColor === color ? (
+                    <Feather name="check" size={20} color="#FFFFFF" />
+                  ) : null}
+                </Pressable>
+              ))}
+            </View>
           </View>
-        </View>
 
-        <Button
-          onPress={handleSave}
-          disabled={isLoading}
-          style={styles.saveButton}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#FFFFFF" size="small" />
-          ) : (
-            "Create Goal"
-          )}
-        </Button>
+          <Button
+            onPress={handleSave}
+            disabled={isLoading}
+            style={styles.saveButton}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" size="small" />
+            ) : (
+              "Create Goal"
+            )}
+          </Button>
+        </AdaptiveContainer>
       </KeyboardAwareScrollViewCompat>
     </ThemedView>
   );

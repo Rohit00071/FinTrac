@@ -20,6 +20,7 @@ import { BudgetProgress } from "@/components/BudgetProgress";
 import { GoalCard } from "@/components/GoalCard";
 import { FAB } from "@/components/FAB";
 import { EmptyState } from "@/components/EmptyState";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 import { useTheme } from "@/hooks/useTheme";
 import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius } from "@/constants/theme";
@@ -87,127 +88,129 @@ export default function DashboardScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
         }
       >
-        <BalanceCard
-          balance={getTotalBalance()}
-          income={getMonthlyIncome()}
-          expense={getMonthlyExpense()}
-        />
+        <AdaptiveContainer>
+          <BalanceCard
+            balance={getTotalBalance()}
+            income={getMonthlyIncome()}
+            expense={getMonthlyExpense()}
+          />
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <ThemedText type="h4">Recent Transactions</ThemedText>
-            <Pressable
-              onPress={() => navigation.navigate("TransactionsTab" as any)}
-            >
-              <ThemedText type="link">View All</ThemedText>
-            </Pressable>
-          </View>
-
-          {recentTransactions.length > 0 ? (
-            recentTransactions.map((txn) => (
-              <TransactionItem
-                key={txn.id}
-                transaction={txn}
-                onPress={() => handleTransactionPress(txn.id)}
-              />
-            ))
-          ) : (
-            <View
-              style={[
-                styles.emptyCard,
-                { backgroundColor: theme.backgroundDefault },
-              ]}
-            >
-              <Feather name="inbox" size={32} color={theme.textSecondary} />
-              <ThemedText
-                type="small"
-                style={{ color: theme.textSecondary, marginTop: Spacing.sm }}
-              >
-                No transactions yet
-              </ThemedText>
-            </View>
-          )}
-        </View>
-
-        {monthBudgets.length > 0 ? (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <ThemedText type="h4">
-                {formatMonth(currentMonth)} Budget
-              </ThemedText>
+              <ThemedText type="h4">Recent Transactions</ThemedText>
               <Pressable
-                onPress={() => navigation.navigate("BudgetTab" as any)}
+                onPress={() => navigation.navigate("TransactionsTab" as any)}
               >
                 <ThemedText type="link">View All</ThemedText>
               </Pressable>
             </View>
-            {monthBudgets.slice(0, 3).map((budget) => (
-              <BudgetProgress key={budget.id} budget={budget} />
-            ))}
-          </View>
-        ) : null}
 
-        {activeGoals.length > 0 ? (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <ThemedText type="h4">Savings Goals</ThemedText>
-              <Pressable onPress={() => navigation.navigate("GoalsTab" as any)}>
-                <ThemedText type="link">View All</ThemedText>
-              </Pressable>
-            </View>
-            {activeGoals.map((goal) => (
-              <GoalCard
-                key={goal.id}
-                goal={goal}
-                onPress={() =>
-                  navigation.navigate("GoalsTab" as any, {
-                    screen: "GoalDetail",
-                    params: { goalId: goal.id },
-                  })
-                }
-              />
-            ))}
-          </View>
-        ) : null}
-
-        {upcomingBills.length > 0 ? (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <ThemedText type="h4">Upcoming Bills</ThemedText>
-              <Pressable
-                onPress={() =>
-                  navigation.navigate("MoreTab" as any, { screen: "Bills" })
-                }
-              >
-                <ThemedText type="link">View All</ThemedText>
-              </Pressable>
-            </View>
-            {upcomingBills.map((bill) => (
+            {recentTransactions.length > 0 ? (
+              recentTransactions.map((txn) => (
+                <TransactionItem
+                  key={txn.id}
+                  transaction={txn}
+                  onPress={() => handleTransactionPress(txn.id)}
+                />
+              ))
+            ) : (
               <View
-                key={bill.id}
                 style={[
-                  styles.billItem,
+                  styles.emptyCard,
                   { backgroundColor: theme.backgroundDefault },
                 ]}
               >
-                <View style={styles.billInfo}>
-                  <ThemedText type="body" style={{ fontWeight: "500" }}>
-                    {bill.name}
-                  </ThemedText>
-                  <ThemedText
-                    type="small"
-                    style={{ color: theme.textSecondary }}
-                  >
-                    Due {new Date(bill.dueDate).toLocaleDateString()}
-                  </ThemedText>
-                </View>
-                <ThemedText type="body" style={{ fontWeight: "600" }}>
-                  ₹{bill.amount.toFixed(2)}
+                <Feather name="inbox" size={32} color={theme.textSecondary} />
+                <ThemedText
+                  type="small"
+                  style={{ color: theme.textSecondary, marginTop: Spacing.sm }}
+                >
+                  No transactions yet
                 </ThemedText>
               </View>
-            ))}
+            )}
           </View>
-        ) : null}
+
+          {monthBudgets.length > 0 ? (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <ThemedText type="h4">
+                  {formatMonth(currentMonth)} Budget
+                </ThemedText>
+                <Pressable
+                  onPress={() => navigation.navigate("BudgetTab" as any)}
+                >
+                  <ThemedText type="link">View All</ThemedText>
+                </Pressable>
+              </View>
+              {monthBudgets.slice(0, 3).map((budget) => (
+                <BudgetProgress key={budget.id} budget={budget} />
+              ))}
+            </View>
+          ) : null}
+
+          {activeGoals.length > 0 ? (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <ThemedText type="h4">Savings Goals</ThemedText>
+                <Pressable onPress={() => navigation.navigate("GoalsTab" as any)}>
+                  <ThemedText type="link">View All</ThemedText>
+                </Pressable>
+              </View>
+              {activeGoals.map((goal) => (
+                <GoalCard
+                  key={goal.id}
+                  goal={goal}
+                  onPress={() =>
+                    navigation.navigate("GoalsTab" as any, {
+                      screen: "GoalDetail",
+                      params: { goalId: goal.id },
+                    })
+                  }
+                />
+              ))}
+            </View>
+          ) : null}
+
+          {upcomingBills.length > 0 ? (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <ThemedText type="h4">Upcoming Bills</ThemedText>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("MoreTab" as any, { screen: "Bills" })
+                  }
+                >
+                  <ThemedText type="link">View All</ThemedText>
+                </Pressable>
+              </View>
+              {upcomingBills.map((bill) => (
+                <View
+                  key={bill.id}
+                  style={[
+                    styles.billItem,
+                    { backgroundColor: theme.backgroundDefault },
+                  ]}
+                >
+                  <View style={styles.billInfo}>
+                    <ThemedText type="body" style={{ fontWeight: "500" }}>
+                      {bill.name}
+                    </ThemedText>
+                    <ThemedText
+                      type="small"
+                      style={{ color: theme.textSecondary }}
+                    >
+                      Due {new Date(bill.dueDate).toLocaleDateString()}
+                    </ThemedText>
+                  </View>
+                  <ThemedText type="body" style={{ fontWeight: "600" }}>
+                    ₹{bill.amount.toFixed(2)}
+                  </ThemedText>
+                </View>
+              ))}
+            </View>
+          ) : null}
+        </AdaptiveContainer>
       </ScrollView>
 
       <FAB onPress={handleAddTransaction} />

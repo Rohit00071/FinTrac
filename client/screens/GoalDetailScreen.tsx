@@ -26,6 +26,7 @@ import {
   getDaysRemaining,
 } from "@/lib/formatters";
 import { GoalsStackParamList } from "@/navigation/GoalsStackNavigator";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 type RouteType = RouteProp<GoalsStackParamList, "GoalDetail">;
 
@@ -103,155 +104,157 @@ export default function GoalDetailScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <View style={styles.progressContainer}>
-            <Svg width={size} height={size}>
-              <Circle
-                stroke={theme.border}
-                fill="none"
-                cx={size / 2}
-                cy={size / 2}
-                r={radius}
-                strokeWidth={strokeWidth}
-              />
-              <Circle
-                stroke={goal.isCompleted ? FinanceColors.income : goal.color}
-                fill="none"
-                cx={size / 2}
-                cy={size / 2}
-                r={radius}
-                strokeWidth={strokeWidth}
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                strokeLinecap="round"
-                rotation="-90"
-                origin={`${size / 2}, ${size / 2}`}
-              />
-            </Svg>
-            <View style={styles.progressText}>
-              <ThemedText style={styles.percentageText}>
-                {percentage}%
-              </ThemedText>
-              <ThemedText type="small" style={{ color: theme.textSecondary }}>
-                Complete
-              </ThemedText>
+        <AdaptiveContainer>
+          <View style={styles.header}>
+            <View style={styles.progressContainer}>
+              <Svg width={size} height={size}>
+                <Circle
+                  stroke={theme.border}
+                  fill="none"
+                  cx={size / 2}
+                  cy={size / 2}
+                  r={radius}
+                  strokeWidth={strokeWidth}
+                />
+                <Circle
+                  stroke={goal.isCompleted ? FinanceColors.income : goal.color}
+                  fill="none"
+                  cx={size / 2}
+                  cy={size / 2}
+                  r={radius}
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                  strokeLinecap="round"
+                  rotation="-90"
+                  origin={`${size / 2}, ${size / 2}`}
+                />
+              </Svg>
+              <View style={styles.progressText}>
+                <ThemedText style={styles.percentageText}>
+                  {percentage}%
+                </ThemedText>
+                <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                  Complete
+                </ThemedText>
+              </View>
             </View>
+
+            <View
+              style={[styles.iconBadge, { backgroundColor: goal.color + "20" }]}
+            >
+              <Feather name={goal.icon as any} size={24} color={goal.color} />
+            </View>
+            <ThemedText type="h3" style={styles.goalName}>
+              {goal.name}
+            </ThemedText>
+
+            {goal.isCompleted ? (
+              <View
+                style={[
+                  styles.statusBadge,
+                  { backgroundColor: FinanceColors.income + "20" },
+                ]}
+              >
+                <Feather
+                  name="check-circle"
+                  size={16}
+                  color={FinanceColors.income}
+                />
+                <ThemedText
+                  style={{ color: FinanceColors.income, fontWeight: "600" }}
+                >
+                  Goal Completed!
+                </ThemedText>
+              </View>
+            ) : (
+              <ThemedText type="body" style={{ color: theme.textSecondary }}>
+                {daysRemaining >= 0
+                  ? `${daysRemaining} days remaining`
+                  : "Overdue"}
+              </ThemedText>
+            )}
           </View>
 
           <View
-            style={[styles.iconBadge, { backgroundColor: goal.color + "20" }]}
+            style={[
+              styles.statsCard,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
           >
-            <Feather name={goal.icon as any} size={24} color={goal.color} />
-          </View>
-          <ThemedText type="h3" style={styles.goalName}>
-            {goal.name}
-          </ThemedText>
+            <View style={styles.statRow}>
+              <View style={styles.statItem}>
+                <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                  Current
+                </ThemedText>
+                <ThemedText type="h4" style={{ color: FinanceColors.income }}>
+                  {formatCurrency(goal.currentAmount)}
+                </ThemedText>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                  Target
+                </ThemedText>
+                <ThemedText type="h4">
+                  {formatCurrency(goal.targetAmount)}
+                </ThemedText>
+              </View>
+            </View>
 
-          {goal.isCompleted ? (
-            <View
-              style={[
-                styles.statusBadge,
-                { backgroundColor: FinanceColors.income + "20" },
-              ]}
+            <View style={[styles.progressBar, { backgroundColor: theme.border }]}>
+              <View
+                style={[
+                  styles.progressFill,
+                  {
+                    backgroundColor: goal.isCompleted
+                      ? FinanceColors.income
+                      : goal.color,
+                    width: `${percentage}%`,
+                  },
+                ]}
+              />
+            </View>
+
+            <View style={styles.infoRow}>
+              <View style={styles.infoItem}>
+                <Feather name="calendar" size={16} color={theme.textSecondary} />
+                <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                  Deadline: {formatDate(goal.deadline)}
+                </ThemedText>
+              </View>
+              <View style={styles.infoItem}>
+                <Feather
+                  name="dollar-sign"
+                  size={16}
+                  color={theme.textSecondary}
+                />
+                <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                  Remaining: {formatCurrency(Math.max(remaining, 0))}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+
+          {!goal.isCompleted ? (
+            <Button
+              onPress={() => setShowContributeModal(true)}
+              style={styles.contributeButton}
             >
-              <Feather
-                name="check-circle"
-                size={16}
-                color={FinanceColors.income}
-              />
-              <ThemedText
-                style={{ color: FinanceColors.income, fontWeight: "600" }}
-              >
-                Goal Completed!
-              </ThemedText>
-            </View>
-          ) : (
-            <ThemedText type="body" style={{ color: theme.textSecondary }}>
-              {daysRemaining >= 0
-                ? `${daysRemaining} days remaining`
-                : "Overdue"}
-            </ThemedText>
-          )}
-        </View>
+              Add Contribution
+            </Button>
+          ) : null}
 
-        <View
-          style={[
-            styles.statsCard,
-            { backgroundColor: theme.backgroundDefault },
-          ]}
-        >
-          <View style={styles.statRow}>
-            <View style={styles.statItem}>
-              <ThemedText type="small" style={{ color: theme.textSecondary }}>
-                Current
-              </ThemedText>
-              <ThemedText type="h4" style={{ color: FinanceColors.income }}>
-                {formatCurrency(goal.currentAmount)}
-              </ThemedText>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <ThemedText type="small" style={{ color: theme.textSecondary }}>
-                Target
-              </ThemedText>
-              <ThemedText type="h4">
-                {formatCurrency(goal.targetAmount)}
-              </ThemedText>
-            </View>
-          </View>
-
-          <View style={[styles.progressBar, { backgroundColor: theme.border }]}>
-            <View
-              style={[
-                styles.progressFill,
-                {
-                  backgroundColor: goal.isCompleted
-                    ? FinanceColors.income
-                    : goal.color,
-                  width: `${percentage}%`,
-                },
-              ]}
-            />
-          </View>
-
-          <View style={styles.infoRow}>
-            <View style={styles.infoItem}>
-              <Feather name="calendar" size={16} color={theme.textSecondary} />
-              <ThemedText type="small" style={{ color: theme.textSecondary }}>
-                Deadline: {formatDate(goal.deadline)}
-              </ThemedText>
-            </View>
-            <View style={styles.infoItem}>
-              <Feather
-                name="dollar-sign"
-                size={16}
-                color={theme.textSecondary}
-              />
-              <ThemedText type="small" style={{ color: theme.textSecondary }}>
-                Remaining: {formatCurrency(Math.max(remaining, 0))}
-              </ThemedText>
-            </View>
-          </View>
-        </View>
-
-        {!goal.isCompleted ? (
           <Button
-            onPress={() => setShowContributeModal(true)}
-            style={styles.contributeButton}
+            onPress={handleDelete}
+            style={[
+              styles.deleteButton,
+              { backgroundColor: FinanceColors.expense },
+            ]}
           >
-            Add Contribution
+            Delete Goal
           </Button>
-        ) : null}
-
-        <Button
-          onPress={handleDelete}
-          style={[
-            styles.deleteButton,
-            { backgroundColor: FinanceColors.expense },
-          ]}
-        >
-          Delete Goal
-        </Button>
+        </AdaptiveContainer>
       </KeyboardAwareScrollViewCompat>
 
       <Modal

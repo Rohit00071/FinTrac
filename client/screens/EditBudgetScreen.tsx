@@ -21,6 +21,7 @@ import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
 import { getCurrentMonth, formatMonth } from "@/lib/formatters";
 import { CategoryType, CATEGORY_CONFIG } from "@/types/finance";
 import { BudgetStackParamList } from "@/navigation/BudgetStackNavigator";
+import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 type RouteType = RouteProp<BudgetStackParamList, "EditBudget">;
 
@@ -114,131 +115,133 @@ export default function EditBudgetScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <View
-          style={[
-            styles.monthBadge,
-            { backgroundColor: theme.backgroundDefault },
-          ]}
-        >
-          <Feather name="calendar" size={16} color={theme.textSecondary} />
-          <ThemedText type="body" style={{ fontWeight: "500" }}>
-            {formatMonth(currentMonth)}
-          </ThemedText>
-        </View>
-
-        {error ? (
+        <AdaptiveContainer>
           <View
             style={[
-              styles.errorContainer,
-              { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
+              styles.monthBadge,
+              { backgroundColor: theme.backgroundDefault },
             ]}
           >
-            <ThemedText
-              style={[
-                styles.errorText,
-                { color: isDark ? "#EF9A9A" : "#C62828" },
-              ]}
-            >
-              {error}
+            <Feather name="calendar" size={16} color={theme.textSecondary} />
+            <ThemedText type="body" style={{ fontWeight: "500" }}>
+              {formatMonth(currentMonth)}
             </ThemedText>
           </View>
-        ) : null}
 
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Category
-          </ThemedText>
-          <View style={styles.categoryGrid}>
-            {CATEGORIES.map(([key, config]) => (
-              <Pressable
-                key={key}
-                onPress={() => !existingBudget && setCategory(key)}
-                disabled={!!existingBudget}
+          {error ? (
+            <View
+              style={[
+                styles.errorContainer,
+                { backgroundColor: isDark ? "#3D2020" : "#FFEBEE" },
+              ]}
+            >
+              <ThemedText
                 style={[
-                  styles.categoryItem,
-                  {
-                    backgroundColor:
-                      category === key
-                        ? config.color + "20"
-                        : theme.backgroundDefault,
-                    borderColor:
-                      category === key ? config.color : "transparent",
-                    borderWidth: 2,
-                    opacity: existingBudget && category !== key ? 0.5 : 1,
-                  },
+                  styles.errorText,
+                  { color: isDark ? "#EF9A9A" : "#C62828" },
                 ]}
               >
-                <Feather
-                  name={config.icon as any}
-                  size={24}
-                  color={category === key ? config.color : theme.textSecondary}
-                />
-                <ThemedText
-                  type="small"
-                  style={{
-                    color: category === key ? config.color : theme.text,
-                    marginTop: Spacing.xs,
-                    textAlign: "center",
-                  }}
-                  numberOfLines={1}
+                {error}
+              </ThemedText>
+            </View>
+          ) : null}
+
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Category
+            </ThemedText>
+            <View style={styles.categoryGrid}>
+              {CATEGORIES.map(([key, config]) => (
+                <Pressable
+                  key={key}
+                  onPress={() => !existingBudget && setCategory(key)}
+                  disabled={!!existingBudget}
+                  style={[
+                    styles.categoryItem,
+                    {
+                      backgroundColor:
+                        category === key
+                          ? config.color + "20"
+                          : theme.backgroundDefault,
+                      borderColor:
+                        category === key ? config.color : "transparent",
+                      borderWidth: 2,
+                      opacity: existingBudget && category !== key ? 0.5 : 1,
+                    },
+                  ]}
                 >
-                  {config.label}
-                </ThemedText>
-              </Pressable>
-            ))}
+                  <Feather
+                    name={config.icon as any}
+                    size={24}
+                    color={category === key ? config.color : theme.textSecondary}
+                  />
+                  <ThemedText
+                    type="small"
+                    style={{
+                      color: category === key ? config.color : theme.text,
+                      marginTop: Spacing.xs,
+                      textAlign: "center",
+                    }}
+                    numberOfLines={1}
+                  >
+                    {config.label}
+                  </ThemedText>
+                </Pressable>
+              ))}
+            </View>
           </View>
-        </View>
 
-        <View style={styles.section}>
-          <ThemedText type="small" style={styles.sectionLabel}>
-            Monthly Budget Limit
-          </ThemedText>
-          <View
-            style={[
-              styles.amountInputContainer,
-              {
-                backgroundColor: theme.inputBackground,
-                borderColor: theme.border,
-              },
-            ]}
-          >
-            <ThemedText style={styles.currencySymbol}>₹</ThemedText>
-            <TextInput
-              style={[styles.amountInput, { color: theme.text }]}
-              placeholder="0.00"
-              placeholderTextColor={theme.textSecondary}
-              value={limit}
-              onChangeText={setLimit}
-              keyboardType="decimal-pad"
-            />
+          <View style={styles.section}>
+            <ThemedText type="small" style={styles.sectionLabel}>
+              Monthly Budget Limit
+            </ThemedText>
+            <View
+              style={[
+                styles.amountInputContainer,
+                {
+                  backgroundColor: theme.inputBackground,
+                  borderColor: theme.border,
+                },
+              ]}
+            >
+              <ThemedText style={styles.currencySymbol}>₹</ThemedText>
+              <TextInput
+                style={[styles.amountInput, { color: theme.text }]}
+                placeholder="0.00"
+                placeholderTextColor={theme.textSecondary}
+                value={limit}
+                onChangeText={setLimit}
+                keyboardType="decimal-pad"
+              />
+            </View>
           </View>
-        </View>
 
-        <Button
-          onPress={handleSave}
-          disabled={isLoading}
-          style={styles.saveButton}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#FFFFFF" size="small" />
-          ) : existingBudget ? (
-            "Update Budget"
-          ) : (
-            "Create Budget"
-          )}
-        </Button>
-
-        {existingBudget ? (
           <Button
-            onPress={handleDelete}
-            style={[
-              styles.deleteButton,
-              { backgroundColor: FinanceColors.expense },
-            ]}
+            onPress={handleSave}
+            disabled={isLoading}
+            style={styles.saveButton}
           >
-            Delete Budget
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" size="small" />
+            ) : existingBudget ? (
+              "Update Budget"
+            ) : (
+              "Create Budget"
+            )}
           </Button>
-        ) : null}
+
+          {existingBudget ? (
+            <Button
+              onPress={handleDelete}
+              style={[
+                styles.deleteButton,
+                { backgroundColor: FinanceColors.expense },
+              ]}
+            >
+              Delete Budget
+            </Button>
+          ) : null}
+        </AdaptiveContainer>
       </KeyboardAwareScrollViewCompat>
     </ThemedView>
   );
