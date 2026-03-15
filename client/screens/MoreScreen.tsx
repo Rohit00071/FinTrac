@@ -1,5 +1,5 @@
-import React from "react";
-import { View, ScrollView, StyleSheet, Pressable } from "react-native";
+import React, { useState } from "react";
+import { View, ScrollView, StyleSheet, Pressable, Alert, ActivityIndicator } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
@@ -10,8 +10,10 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFinance } from "@/contexts/FinanceContext";
 import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
 import { MoreStackParamList } from "@/navigation/MoreStackNavigator";
+import { createTestData, clearAllData } from "@/lib/test-data";
 
 type NavigationProp = NativeStackNavigationProp<MoreStackParamList>;
 
@@ -32,10 +34,17 @@ function MenuItem({ icon, label, onPress, color, showBadge }: MenuItemProps) {
       onPress={onPress}
       style={({ pressed }) => [
         styles.menuItem,
-        { backgroundColor: pressed ? theme.backgroundSecondary : "transparent" },
+        {
+          backgroundColor: pressed ? theme.backgroundSecondary : "transparent",
+        },
       ]}
     >
-      <View style={[styles.menuIcon, { backgroundColor: (color || theme.link) + "15" }]}>
+      <View
+        style={[
+          styles.menuIcon,
+          { backgroundColor: (color || theme.link) + "15" },
+        ]}
+      >
         <Feather name={icon as any} size={20} color={iconColor} />
       </View>
       <ThemedText type="body" style={styles.menuLabel}>
@@ -55,10 +64,97 @@ export default function MoreScreen() {
   const { theme } = useTheme();
   const navigation = useNavigation<NavigationProp>();
   const { user, logout } = useAuth();
+  const { refreshData } = useFinance();
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const handleLogout = async () => {
     await logout();
   };
+
+  const handleLoadTestData = async () => {
+    Alert.alert(
+      "Load Test Data",
+      "This will add sample financial data to test AI agents. Continue?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Load Data",
+          onPress: async () => {
+            setIsLoadingData(true);
+            try {
+              await createTestData();
+              await refreshData();
+              Alert.alert(
+                "Success",
+                "Test data loaded! Check AI Agents tab to see recommendations."
+              );
+            } catch (error) {
+              Alert.alert("Error", "Failed to load test data");
+            } finally {
+              setIsLoadingData(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleClearData = async () => {
+    Alert.alert(
+      "Clear All Data",
+      "This will delete ALL financial data. This cannot be undone!",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear All",
+          style: "destructive",
+          onPress: async () => {
+            setIsLoadingData(true);
+            try {
+              await clearAllData();
+              await refreshData();
+              Alert.alert("Success", "All data cleared");
+            } catch (error) {
+              Alert.alert("Error", "Failed to clear data");
+            } finally {
+              setIsLoadingData(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  // Expose functions to window for easy testing via browser console
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).loadTestData = async () => {
+        try {
+          await createTestData();
+          await refreshData();
+          console.log('✅ Test data loaded successfully!');
+          alert('Test data loaded! Check AI Agents tab.');
+        } catch (error) {
+          console.error('❌ Failed to load test data:', error);
+          alert('Failed to load test data. Check console.');
+        }
+      };
+      (window as any).clearTestData = async () => {
+        try {
+          await clearAllData();
+          await refreshData();
+          console.log('✅ All data cleared!');
+          alert('All data cleared!');
+        } catch (error) {
+          console.error('❌ Failed to clear data:', error);
+          alert('Failed to clear data. Check console.');
+        }
+      };
+      console.log('💡 Test data functions exposed to window:');
+      console.log('   - window.loadTestData()');
+      console.log('   - window.clearTestData()');
+    }
+  }, [refreshData]);
 
   return (
     <ThemedView style={styles.container}>
@@ -74,7 +170,10 @@ export default function MoreScreen() {
       >
         <Pressable
           onPress={() => navigation.navigate("Profile")}
-          style={[styles.profileCard, { backgroundColor: theme.backgroundDefault }]}
+          style={[
+            styles.profileCard,
+            { backgroundColor: theme.backgroundDefault },
+          ]}
         >
           <View style={[styles.avatar, { backgroundColor: theme.link + "20" }]}>
             <Feather name="user" size={28} color={theme.link} />
@@ -98,7 +197,10 @@ export default function MoreScreen() {
             Finance
           </ThemedText>
           <View
-            style={[styles.menuGroup, { backgroundColor: theme.backgroundDefault }]}
+            style={[
+              styles.menuGroup,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
           >
             <MenuItem
               icon="credit-card"
@@ -128,7 +230,10 @@ export default function MoreScreen() {
             App
           </ThemedText>
           <View
-            style={[styles.menuGroup, { backgroundColor: theme.backgroundDefault }]}
+            style={[
+              styles.menuGroup,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
           >
             <MenuItem
               icon="settings"
@@ -139,8 +244,86 @@ export default function MoreScreen() {
         </View>
 
         <View style={styles.section}>
+          <ThemedText
+            type="small"
+            style={[styles.sectionTitle, { color: theme.textSecondary }]}
+          >
+            Developer Tools
+          </ThemedText>
           <View
-            style={[styles.menuGroup, { backgroundColor: theme.backgroundDefault }]}
+            style={[
+              styles.menuGroup,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
+          >
+            <Pressable
+              onPress={handleLoadTestData}
+              disabled={isLoadingData}
+              style={({ pressed }) => [
+                styles.menuItem,
+                {
+                  backgroundColor: pressed ? theme.backgroundSecondary : "transparent",
+                },
+              ]}
+            >
+              <View
+                style={[
+                  styles.menuIcon,
+                  { backgroundColor: "#4CAF50" + "15" },
+                ]}
+              >
+                {isLoadingData ? (
+                  <ActivityIndicator size="small" color="#4CAF50" />
+                ) : (
+                  <Feather name="database" size={20} color="#4CAF50" />
+                )}
+              </View>
+              <ThemedText type="body" style={styles.menuLabel}>
+                Load Test Data
+              </ThemedText>
+              <View style={styles.menuArrow}>
+                <Feather name="chevron-right" size={20} color={theme.textSecondary} />
+              </View>
+            </Pressable>
+            <View style={[styles.divider, { backgroundColor: theme.border }]} />
+            <Pressable
+              onPress={handleClearData}
+              disabled={isLoadingData}
+              style={({ pressed }) => [
+                styles.menuItem,
+                {
+                  backgroundColor: pressed ? theme.backgroundSecondary : "transparent",
+                },
+              ]}
+            >
+              <View
+                style={[
+                  styles.menuIcon,
+                  { backgroundColor: FinanceColors.expense + "15" },
+                ]}
+              >
+                {isLoadingData ? (
+                  <ActivityIndicator size="small" color={FinanceColors.expense} />
+                ) : (
+                  <Feather name="trash-2" size={20} color={FinanceColors.expense} />
+                )}
+              </View>
+              <ThemedText type="body" style={styles.menuLabel}>
+                Clear All Data
+              </ThemedText>
+              <View style={styles.menuArrow}>
+                <Feather name="chevron-right" size={20} color={theme.textSecondary} />
+              </View>
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <View
+            style={[
+              styles.menuGroup,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
           >
             <MenuItem
               icon="log-out"

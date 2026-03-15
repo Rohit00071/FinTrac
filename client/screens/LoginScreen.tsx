@@ -154,7 +154,7 @@ export default function LoginScreen() {
 
           <View style={styles.footer}>
             <ThemedText type="body" style={{ color: theme.textSecondary }}>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
             </ThemedText>
             <Pressable onPress={() => navigation.navigate("Register")}>
               <ThemedText type="link">Sign Up</ThemedText>

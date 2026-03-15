@@ -65,7 +65,10 @@ export default function GoalDetailScreen() {
   const handleContribute = async () => {
     const amount = parseFloat(contributionAmount);
     if (isNaN(amount) || amount <= 0) {
-      Alert.alert("Invalid Amount", "Please enter a valid contribution amount.");
+      Alert.alert(
+        "Invalid Amount",
+        "Please enter a valid contribution amount.",
+      );
       return;
     }
 
@@ -126,14 +129,18 @@ export default function GoalDetailScreen() {
               />
             </Svg>
             <View style={styles.progressText}>
-              <ThemedText style={styles.percentageText}>{percentage}%</ThemedText>
+              <ThemedText style={styles.percentageText}>
+                {percentage}%
+              </ThemedText>
               <ThemedText type="small" style={{ color: theme.textSecondary }}>
                 Complete
               </ThemedText>
             </View>
           </View>
 
-          <View style={[styles.iconBadge, { backgroundColor: goal.color + "20" }]}>
+          <View
+            style={[styles.iconBadge, { backgroundColor: goal.color + "20" }]}
+          >
             <Feather name={goal.icon as any} size={24} color={goal.color} />
           </View>
           <ThemedText type="h3" style={styles.goalName}>
@@ -141,9 +148,20 @@ export default function GoalDetailScreen() {
           </ThemedText>
 
           {goal.isCompleted ? (
-            <View style={[styles.statusBadge, { backgroundColor: FinanceColors.income + "20" }]}>
-              <Feather name="check-circle" size={16} color={FinanceColors.income} />
-              <ThemedText style={{ color: FinanceColors.income, fontWeight: "600" }}>
+            <View
+              style={[
+                styles.statusBadge,
+                { backgroundColor: FinanceColors.income + "20" },
+              ]}
+            >
+              <Feather
+                name="check-circle"
+                size={16}
+                color={FinanceColors.income}
+              />
+              <ThemedText
+                style={{ color: FinanceColors.income, fontWeight: "600" }}
+              >
                 Goal Completed!
               </ThemedText>
             </View>
@@ -156,7 +174,12 @@ export default function GoalDetailScreen() {
           )}
         </View>
 
-        <View style={[styles.statsCard, { backgroundColor: theme.backgroundDefault }]}>
+        <View
+          style={[
+            styles.statsCard,
+            { backgroundColor: theme.backgroundDefault },
+          ]}
+        >
           <View style={styles.statRow}>
             <View style={styles.statItem}>
               <ThemedText type="small" style={{ color: theme.textSecondary }}>
@@ -171,7 +194,9 @@ export default function GoalDetailScreen() {
               <ThemedText type="small" style={{ color: theme.textSecondary }}>
                 Target
               </ThemedText>
-              <ThemedText type="h4">{formatCurrency(goal.targetAmount)}</ThemedText>
+              <ThemedText type="h4">
+                {formatCurrency(goal.targetAmount)}
+              </ThemedText>
             </View>
           </View>
 
@@ -180,7 +205,9 @@ export default function GoalDetailScreen() {
               style={[
                 styles.progressFill,
                 {
-                  backgroundColor: goal.isCompleted ? FinanceColors.income : goal.color,
+                  backgroundColor: goal.isCompleted
+                    ? FinanceColors.income
+                    : goal.color,
                   width: `${percentage}%`,
                 },
               ]}
@@ -195,7 +222,11 @@ export default function GoalDetailScreen() {
               </ThemedText>
             </View>
             <View style={styles.infoItem}>
-              <Feather name="dollar-sign" size={16} color={theme.textSecondary} />
+              <Feather
+                name="dollar-sign"
+                size={16}
+                color={theme.textSecondary}
+              />
               <ThemedText type="small" style={{ color: theme.textSecondary }}>
                 Remaining: {formatCurrency(Math.max(remaining, 0))}
               </ThemedText>
@@ -214,7 +245,10 @@ export default function GoalDetailScreen() {
 
         <Button
           onPress={handleDelete}
-          style={[styles.deleteButton, { backgroundColor: FinanceColors.expense }]}
+          style={[
+            styles.deleteButton,
+            { backgroundColor: FinanceColors.expense },
+          ]}
         >
           Delete Goal
         </Button>
@@ -231,7 +265,10 @@ export default function GoalDetailScreen() {
           onPress={() => setShowContributeModal(false)}
         >
           <Pressable
-            style={[styles.modalContent, { backgroundColor: theme.backgroundRoot }]}
+            style={[
+              styles.modalContent,
+              { backgroundColor: theme.backgroundRoot },
+            ]}
             onPress={(e) => e.stopPropagation()}
           >
             <ThemedText type="h4" style={styles.modalTitle}>
@@ -247,7 +284,7 @@ export default function GoalDetailScreen() {
                 },
               ]}
             >
-              <ThemedText style={styles.currencySymbol}>$</ThemedText>
+              <ThemedText style={styles.currencySymbol}>₹</ThemedText>
               <TextInput
                 style={[styles.amountInput, { color: theme.text }]}
                 placeholder="0.00"
@@ -262,7 +299,10 @@ export default function GoalDetailScreen() {
             <View style={styles.modalButtons}>
               <Button
                 onPress={() => setShowContributeModal(false)}
-                style={[styles.modalButton, { backgroundColor: theme.backgroundSecondary }]}
+                style={[
+                  styles.modalButton,
+                  { backgroundColor: theme.backgroundSecondary },
+                ]}
               >
                 Cancel
               </Button>

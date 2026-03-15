@@ -1,0 +1,118 @@
+<svg width="800" height="750" xmlns="http://www.w3.org/2000/svg">
+  <!-- Styles -->
+  <style>
+    .actor-head { fill: #e6e6fa; stroke: black; stroke-width: 1; }
+    .actor-body { stroke: black; stroke-width: 1.5; }
+    .lifeline { stroke: black; stroke-width: 1; stroke-dasharray: 5,5; }
+    .object-box { fill: #e6e6fa; stroke: black; stroke-width: 1; }
+    .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+    .message-text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+    .arrow { stroke: black; stroke-width: 1.5; marker-end: url(#arrowhead); }
+    .dashed-arrow { stroke: black; stroke-width: 1.5; stroke-dasharray: 4,4; marker-end: url(#arrowhead); }
+    .alt-box { fill: none; stroke: black; stroke-width: 1.5; }
+    .alt-label { font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; fill: black; }
+    .condition-label { font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; fill: black; }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+    </marker>
+  </defs>
+
+  <!-- Lifelines -->
+  <!-- Registered User -->
+  <g transform="translate(100, 50)">
+    <circle cx="20" cy="20" r="15" class="actor-head" />
+    <line x1="20" y1="35" x2="20" y2="75" class="actor-body" />
+    <line x1="20" y1="45" x2="0" y2="65" class="actor-body" />
+    <line x1="20" y1="45" x2="40" y2="65" class="actor-body" />
+    <line x1="20" y1="75" x2="0" y2="105" class="actor-body" />
+    <line x1="20" y1="75" x2="40" y2="105" class="actor-body" />
+    <text x="20" y="125" class="text">Registered User</text>
+    <line x1="20" y1="130" x2="20" y2="700" class="lifeline" />
+  </g>
+
+  <!-- Goal Screen -->
+  <g transform="translate(350, 80)">
+    <rect x="-60" y="0" width="120" height="40" class="object-box" />
+    <text x="0" y="25" class="text">Goal UI</text>
+    <line x1="0" y1="40" x2="0" y2="700" class="lifeline" />
+  </g>
+
+  <!-- AsyncStorage -->
+  <g transform="translate(600, 80)">
+    <rect x="-60" y="0" width="120" height="40" class="object-box" />
+    <text x="0" y="25" class="text">AsyncStorage</text>
+    <line x1="0" y1="40" x2="0" y2="700" class="lifeline" />
+  </g>
+
+  <!-- Messages -->
+  
+  <!-- 1. Open Screen -->
+  <line x1="120" y1="160" x2="350" y2="160" class="arrow" />
+  <text x="235" y="155" class="message-text">1. Open Add Goal Screen</text>
+
+  <!-- 2. Enter Details -->
+  <line x1="120" y1="200" x2="350" y2="200" class="arrow" />
+  <text x="235" y="195" class="message-text">2. Enter Name, Target, Deadline</text>
+
+  <!-- 3. Click Save -->
+  <line x1="120" y1="240" x2="350" y2="240" class="arrow" />
+  <text x="235" y="235" class="message-text">3. Click "Create Goal"</text>
+
+  <!-- 4. Validate Input -->
+  <line x1="350" y1="260" x2="380" y2="260" stroke="black" stroke-width="1.5" />
+  <line x1="380" y1="260" x2="380" y2="280" stroke="black" stroke-width="1.5" />
+  <line x1="380" y1="280" x2="350" y2="280" class="arrow" />
+  <text x="410" y="275" class="message-text">4. Validate Input</text>
+
+  <!-- Alt Block -->
+  <rect x="50" y="310" width="650" height="320" class="alt-box" />
+  <path d="M 50 340 L 120 340 L 130 330 L 130 310" fill="none" stroke="black" stroke-width="1" />
+  <text x="75" y="330" class="alt-label">alt</text>
+  
+  <!-- Condition: Input Valid -->
+  <text x="180" y="330" class="condition-label">[Input Valid]</text>
+
+  <!-- 5. Save Goal -->
+  <line x1="350" y1="370" x2="600" y2="370" class="arrow" />
+  <text x="475" y="365" class="message-text">5. Save Goal Data</text>
+
+  <!-- 6. Confirm Save -->
+  <line x1="600" y1="410" x2="350" y2="410" class="dashed-arrow" />
+  <text x="475" y="405" class="message-text">6. Return Success</text>
+
+  <!-- 7. Show Success -->
+  <line x1="350" y1="450" x2="120" y2="450" class="dashed-arrow" />
+  <text x="235" y="445" class="message-text">7. Show "Goal Created"</text>
+
+  <!-- Divider -->
+  <line x1="50" y1="490" x2="700" y2="490" stroke="black" stroke-width="1" stroke-dasharray="3,3" />
+
+  <!-- Condition: Input Invalid -->
+  <text x="100" y="510" class="condition-label">[Input Invalid]</text>
+
+  <!-- Show Error -->
+  <line x1="350" y1="550" x2="120" y2="550" class="dashed-arrow" />
+  <text x="235" y="545" class="message-text">Show Validation Error</text>
+
+  <!-- Bottom Actors -->
+  <g transform="translate(100, 680)">
+    <circle cx="20" cy="20" r="15" class="actor-head" />
+    <line x1="20" y1="35" x2="20" y2="75" class="actor-body" />
+    <line x1="20" y1="45" x2="0" y2="65" class="actor-body" />
+    <line x1="20" y1="45" x2="40" y2="65" class="actor-body" />
+    <text x="20" y="95" class="text">Registered User</text>
+  </g>
+
+  <g transform="translate(350, 660)">
+    <rect x="-60" y="0" width="120" height="40" class="object-box" />
+    <text x="0" y="25" class="text">Goal UI</text>
+  </g>
+
+  <g transform="translate(600, 660)">
+    <rect x="-60" y="0" width="120" height="40" class="object-box" />
+    <text x="0" y="25" class="text">AsyncStorage</text>
+  </g>
+
+</svg>

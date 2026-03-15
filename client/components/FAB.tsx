@@ -33,11 +33,7 @@ export function FAB({ onPress }: FABProps) {
       onPressOut={() => {
         scale.value = withSpring(1);
       }}
-      style={[
-        styles.fab,
-        animatedStyle,
-        { bottom: tabBarHeight + Spacing.lg },
-      ]}
+      style={[styles.fab, animatedStyle, { bottom: tabBarHeight + Spacing.lg }]}
     >
       <Feather name="plus" size={28} color="#FFFFFF" />
     </AnimatedPressable>

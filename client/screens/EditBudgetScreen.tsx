@@ -42,10 +42,10 @@ export default function EditBudgetScreen() {
     : null;
 
   const [category, setCategory] = useState<CategoryType>(
-    (initialCategory as CategoryType) || existingBudget?.category || "food"
+    (initialCategory as CategoryType) || existingBudget?.category || "food",
   );
   const [limit, setLimit] = useState(
-    existingBudget ? existingBudget.limit.toString() : ""
+    existingBudget ? existingBudget.limit.toString() : "",
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -98,7 +98,7 @@ export default function EditBudgetScreen() {
             navigation.goBack();
           },
         },
-      ]
+      ],
     );
   };
 
@@ -202,7 +202,7 @@ export default function EditBudgetScreen() {
               },
             ]}
           >
-            <ThemedText style={styles.currencySymbol}>$</ThemedText>
+            <ThemedText style={styles.currencySymbol}>₹</ThemedText>
             <TextInput
               style={[styles.amountInput, { color: theme.text }]}
               placeholder="0.00"

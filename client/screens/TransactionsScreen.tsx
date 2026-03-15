@@ -43,7 +43,7 @@ export default function TransactionsScreen() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
-    null
+    null,
   );
   const [showSearch, setShowSearch] = useState(false);
 
@@ -60,7 +60,7 @@ export default function TransactionsScreen() {
         (t) =>
           t.description.toLowerCase().includes(query) ||
           t.notes.toLowerCase().includes(query) ||
-          CATEGORY_CONFIG[t.category].label.toLowerCase().includes(query)
+          CATEGORY_CONFIG[t.category].label.toLowerCase().includes(query),
       );
     }
 
@@ -69,7 +69,7 @@ export default function TransactionsScreen() {
 
   const sections = useMemo(
     () => groupTransactionsByDate(filteredTransactions),
-    [filteredTransactions]
+    [filteredTransactions],
   );
 
   const onRefresh = useCallback(async () => {
@@ -90,12 +90,12 @@ export default function TransactionsScreen() {
     section: { title: string };
   }) => (
     <View
-      style={[
-        styles.sectionHeader,
-        { backgroundColor: theme.backgroundRoot },
-      ]}
+      style={[styles.sectionHeader, { backgroundColor: theme.backgroundRoot }]}
     >
-      <ThemedText type="small" style={{ color: theme.textSecondary, fontWeight: "600" }}>
+      <ThemedText
+        type="small"
+        style={{ color: theme.textSecondary, fontWeight: "600" }}
+      >
         {title}
       </ThemedText>
     </View>
@@ -239,7 +239,9 @@ export default function TransactionsScreen() {
                 ? "No transactions match your filters"
                 : "Start tracking your finances by adding your first transaction"
             }
-            buttonText={!searchQuery && !selectedCategory ? "Add Transaction" : undefined}
+            buttonText={
+              !searchQuery && !selectedCategory ? "Add Transaction" : undefined
+            }
             onButtonPress={handleAddTransaction}
           />
         </View>

@@ -202,7 +202,9 @@ export default function AddGoalScreen() {
                         ? selectedColor + "20"
                         : theme.backgroundDefault,
                     borderColor:
-                      selectedIcon === item.icon ? selectedColor : "transparent",
+                      selectedIcon === item.icon
+                        ? selectedColor
+                        : "transparent",
                     borderWidth: 2,
                   },
                 ]}
@@ -211,7 +213,9 @@ export default function AddGoalScreen() {
                   name={item.icon as any}
                   size={24}
                   color={
-                    selectedIcon === item.icon ? selectedColor : theme.textSecondary
+                    selectedIcon === item.icon
+                      ? selectedColor
+                      : theme.textSecondary
                   }
                 />
               </Pressable>

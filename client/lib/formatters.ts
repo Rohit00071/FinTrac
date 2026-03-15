@@ -1,10 +1,22 @@
-export function formatCurrency(amount: number, currency: string = "USD"): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+export function formatCurrency(amount: number): string {
+  // Indian numbering system with Rupees
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
   }).format(amount);
+}
+
+export function formatCurrencyCompact(amount: number): string {
+  // Indian numbering: Crores and Lakhs
+  if (amount >= 10000000) { // 1 Crore = 1,00,00,000
+    return `₹${(amount / 10000000).toFixed(2)}Cr`;
+  } else if (amount >= 100000) { // 1 Lakh = 1,00,000
+    return `₹${(amount / 100000).toFixed(2)}L`;
+  } else if (amount >= 1000) {
+    return `₹${(amount / 1000).toFixed(1)}K`;
+  }
+  return `₹${amount.toFixed(0)}`;
 }
 
 export function formatDate(dateString: string): string {
@@ -65,12 +77,12 @@ export function getPercentage(current: number, target: number): number {
 }
 
 export function groupTransactionsByDate(
-  transactions: Array<{
+  transactions: {
     id: string;
     date: string;
     [key: string]: any;
-  }>
-): Array<{ title: string; data: any[] }> {
+  }[],
+): { title: string; data: any[] }[] {
   const groups: { [key: string]: any[] } = {};
 
   transactions.forEach((txn) => {

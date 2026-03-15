@@ -7,7 +7,11 @@ import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius, FinanceColors } from "@/constants/theme";
 import { Goal } from "@/types/finance";
-import { formatCurrency, getPercentage, getDaysRemaining } from "@/lib/formatters";
+import {
+  formatCurrency,
+  getPercentage,
+  getDaysRemaining,
+} from "@/lib/formatters";
 
 interface GoalCardProps {
   goal: Goal;
@@ -61,7 +65,9 @@ export function GoalCard({ goal, onPress }: GoalCardProps) {
 
       <View style={styles.content}>
         <View style={styles.header}>
-          <View style={[styles.iconBadge, { backgroundColor: goal.color + "20" }]}>
+          <View
+            style={[styles.iconBadge, { backgroundColor: goal.color + "20" }]}
+          >
             <Feather name={goal.icon as any} size={16} color={goal.color} />
           </View>
           <ThemedText type="body" style={styles.name} numberOfLines={1}>
@@ -70,7 +76,8 @@ export function GoalCard({ goal, onPress }: GoalCardProps) {
         </View>
 
         <ThemedText type="small" style={{ color: theme.textSecondary }}>
-          {formatCurrency(goal.currentAmount)} of {formatCurrency(goal.targetAmount)}
+          {formatCurrency(goal.currentAmount)} of{" "}
+          {formatCurrency(goal.targetAmount)}
         </ThemedText>
 
         <ThemedText

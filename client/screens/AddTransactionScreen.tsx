@@ -108,7 +108,9 @@ export default function AddTransactionScreen() {
               styles.typeButton,
               {
                 backgroundColor:
-                  type === "expense" ? FinanceColors.expense : theme.backgroundDefault,
+                  type === "expense"
+                    ? FinanceColors.expense
+                    : theme.backgroundDefault,
               },
             ]}
           >
@@ -132,7 +134,9 @@ export default function AddTransactionScreen() {
               styles.typeButton,
               {
                 backgroundColor:
-                  type === "income" ? FinanceColors.income : theme.backgroundDefault,
+                  type === "income"
+                    ? FinanceColors.income
+                    : theme.backgroundDefault,
               },
             ]}
           >
@@ -310,7 +314,10 @@ export default function AddTransactionScreen() {
 
         <Pressable
           onPress={() => setIsRecurring(!isRecurring)}
-          style={[styles.toggleRow, { backgroundColor: theme.backgroundDefault }]}
+          style={[
+            styles.toggleRow,
+            { backgroundColor: theme.backgroundDefault },
+          ]}
         >
           <View style={styles.toggleLabel}>
             <Feather name="repeat" size={20} color={theme.textSecondary} />
@@ -335,7 +342,11 @@ export default function AddTransactionScreen() {
           </View>
         </Pressable>
 
-        <Button onPress={handleSave} disabled={isLoading} style={styles.saveButton}>
+        <Button
+          onPress={handleSave}
+          disabled={isLoading}
+          style={styles.saveButton}
+        >
           {isLoading ? (
             <ActivityIndicator color="#FFFFFF" size="small" />
           ) : (

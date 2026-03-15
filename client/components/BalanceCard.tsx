@@ -29,7 +29,14 @@ export function BalanceCard({ balance, income, expense }: BalanceCardProps) {
 
       <View style={styles.statsRow}>
         <View style={styles.stat}>
-          <View style={[styles.statIcon, { backgroundColor: FinanceColors.income + "30" }]}>
+          <View
+            style={[
+              styles.statIcon,
+              {
+                backgroundColor: FinanceColors.income + "30",
+              },
+            ]}
+          >
             <Feather name="arrow-up-right" size={16} color="#FFFFFF" />
           </View>
           <View>
@@ -43,7 +50,14 @@ export function BalanceCard({ balance, income, expense }: BalanceCardProps) {
         <View style={styles.divider} />
 
         <View style={styles.stat}>
-          <View style={[styles.statIcon, { backgroundColor: FinanceColors.expense + "30" }]}>
+          <View
+            style={[
+              styles.statIcon,
+              {
+                backgroundColor: FinanceColors.expense + "30",
+              },
+            ]}
+          >
             <Feather name="arrow-down-left" size={16} color="#FFFFFF" />
           </View>
           <View>

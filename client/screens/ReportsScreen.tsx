@@ -1,5 +1,11 @@
 import React, { useState, useMemo } from "react";
-import { View, ScrollView, StyleSheet, Pressable, Dimensions } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Pressable,
+  Dimensions,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Feather } from "@expo/vector-icons";
@@ -19,8 +25,12 @@ export default function ReportsScreen() {
   const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
   const { theme, isDark } = useTheme();
-  const { transactions, getMonthlyIncome, getMonthlyExpense, getCategorySpending } =
-    useFinance();
+  const {
+    transactions,
+    getMonthlyIncome,
+    getMonthlyExpense,
+    getCategorySpending,
+  } = useFinance();
 
   const [currentMonth, setCurrentMonth] = useState(getCurrentMonth());
 
@@ -59,7 +69,7 @@ export default function ReportsScreen() {
       const date = new Date(year, month - 1 - i);
       const monthStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
       months.push(
-        new Intl.DateTimeFormat("en", { month: "short" }).format(date)
+        new Intl.DateTimeFormat("en", { month: "short" }).format(date),
       );
       incomeData.push(getMonthlyIncome(monthStr));
       expenseData.push(getMonthlyExpense(monthStr));
@@ -107,9 +117,16 @@ export default function ReportsScreen() {
 
         <View style={styles.summaryCards}>
           <View
-            style={[styles.summaryCard, { backgroundColor: FinanceColors.income + "15" }]}
+            style={[
+              styles.summaryCard,
+              { backgroundColor: FinanceColors.income + "15" },
+            ]}
           >
-            <Feather name="arrow-up-right" size={20} color={FinanceColors.income} />
+            <Feather
+              name="arrow-up-right"
+              size={20}
+              color={FinanceColors.income}
+            />
             <ThemedText type="small">Income</ThemedText>
             <ThemedText
               type="h4"
@@ -120,9 +137,16 @@ export default function ReportsScreen() {
           </View>
 
           <View
-            style={[styles.summaryCard, { backgroundColor: FinanceColors.expense + "15" }]}
+            style={[
+              styles.summaryCard,
+              { backgroundColor: FinanceColors.expense + "15" },
+            ]}
           >
-            <Feather name="arrow-down-left" size={20} color={FinanceColors.expense} />
+            <Feather
+              name="arrow-down-left"
+              size={20}
+              color={FinanceColors.expense}
+            />
             <ThemedText type="small">Expense</ThemedText>
             <ThemedText
               type="h4"
@@ -137,20 +161,27 @@ export default function ReportsScreen() {
               styles.summaryCard,
               {
                 backgroundColor:
-                  (netSavings >= 0 ? FinanceColors.income : FinanceColors.expense) + "15",
+                  (netSavings >= 0
+                    ? FinanceColors.income
+                    : FinanceColors.expense) + "15",
               },
             ]}
           >
             <Feather
               name={netSavings >= 0 ? "trending-up" : "trending-down"}
               size={20}
-              color={netSavings >= 0 ? FinanceColors.income : FinanceColors.expense}
+              color={
+                netSavings >= 0 ? FinanceColors.income : FinanceColors.expense
+              }
             />
             <ThemedText type="small">Net</ThemedText>
             <ThemedText
               type="h4"
               style={{
-                color: netSavings >= 0 ? FinanceColors.income : FinanceColors.expense,
+                color:
+                  netSavings >= 0
+                    ? FinanceColors.income
+                    : FinanceColors.expense,
                 marginTop: Spacing.xs,
               }}
             >
@@ -165,7 +196,10 @@ export default function ReportsScreen() {
               Spending by Category
             </ThemedText>
             <View
-              style={[styles.chartCard, { backgroundColor: theme.backgroundDefault }]}
+              style={[
+                styles.chartCard,
+                { backgroundColor: theme.backgroundDefault },
+              ]}
             >
               <PieChart
                 data={categoryData}
@@ -186,7 +220,10 @@ export default function ReportsScreen() {
             Income vs Expense Trend
           </ThemedText>
           <View
-            style={[styles.chartCard, { backgroundColor: theme.backgroundDefault }]}
+            style={[
+              styles.chartCard,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
           >
             <BarChart
               data={{
@@ -208,7 +245,7 @@ export default function ReportsScreen() {
                 ...chartConfig,
                 color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
               }}
-              yAxisLabel="$"
+              yAxisLabel="₹"
               yAxisSuffix=""
               fromZero
               showValuesOnTopOfBars={false}
@@ -217,11 +254,21 @@ export default function ReportsScreen() {
           </View>
           <View style={styles.legend}>
             <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: FinanceColors.income }]} />
+              <View
+                style={[
+                  styles.legendDot,
+                  { backgroundColor: FinanceColors.income },
+                ]}
+              />
               <ThemedText type="small">Income</ThemedText>
             </View>
             <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: FinanceColors.expense }]} />
+              <View
+                style={[
+                  styles.legendDot,
+                  { backgroundColor: FinanceColors.expense },
+                ]}
+              />
               <ThemedText type="small">Expense</ThemedText>
             </View>
           </View>
@@ -241,11 +288,16 @@ export default function ReportsScreen() {
                 ]}
               >
                 <View style={styles.categoryRank}>
-                  <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                  <ThemedText
+                    type="small"
+                    style={{ color: theme.textSecondary }}
+                  >
                     #{index + 1}
                   </ThemedText>
                 </View>
-                <View style={[styles.categoryDot, { backgroundColor: cat.color }]} />
+                <View
+                  style={[styles.categoryDot, { backgroundColor: cat.color }]}
+                />
                 <ThemedText type="body" style={styles.categoryName}>
                   {cat.name}
                 </ThemedText>
@@ -274,8 +326,8 @@ export default function ReportsScreen() {
                 Spending Alert
               </ThemedText>
               <ThemedText type="small" style={{ color: theme.textSecondary }}>
-                You spent {formatCurrency(monthlyExpense - monthlyIncome)} more than you
-                earned this month.
+                You spent {formatCurrency(monthlyExpense - monthlyIncome)} more
+                than you earned this month.
               </ThemedText>
             </View>
           </View>
@@ -286,14 +338,18 @@ export default function ReportsScreen() {
               { backgroundColor: FinanceColors.income + "15" },
             ]}
           >
-            <Feather name="check-circle" size={24} color={FinanceColors.income} />
+            <Feather
+              name="check-circle"
+              size={24}
+              color={FinanceColors.income}
+            />
             <View style={styles.insightContent}>
               <ThemedText type="body" style={{ fontWeight: "600" }}>
                 Great Job!
               </ThemedText>
               <ThemedText type="small" style={{ color: theme.textSecondary }}>
-                You saved {formatCurrency(monthlyIncome - monthlyExpense)} this month.
-                Keep it up!
+                You saved {formatCurrency(monthlyIncome - monthlyExpense)} this
+                month. Keep it up!
               </ThemedText>
             </View>
           </View>

@@ -98,7 +98,9 @@ export default function BudgetScreen() {
                   >
                     Total Budget
                   </ThemedText>
-                  <ThemedText type="h4">{formatCurrency(totalBudget)}</ThemedText>
+                  <ThemedText type="h4">
+                    {formatCurrency(totalBudget)}
+                  </ThemedText>
                 </View>
                 <View style={styles.summaryDivider} />
                 <View style={styles.summaryItem}>
@@ -123,7 +125,10 @@ export default function BudgetScreen() {
               </View>
 
               <View
-                style={[styles.progressBackground, { backgroundColor: theme.border }]}
+                style={[
+                  styles.progressBackground,
+                  { backgroundColor: theme.border },
+                ]}
               >
                 <View
                   style={[

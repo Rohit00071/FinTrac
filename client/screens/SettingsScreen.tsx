@@ -34,7 +34,7 @@ export default function SettingsScreen() {
 
   const updateSetting = async <K extends keyof AppSettings>(
     key: K,
-    value: AppSettings[K]
+    value: AppSettings[K],
   ) => {
     const newSettings = { ...settings, [key]: value };
     setSettings(newSettings);
@@ -61,7 +61,10 @@ export default function SettingsScreen() {
             Appearance
           </ThemedText>
           <View
-            style={[styles.settingGroup, { backgroundColor: theme.backgroundDefault }]}
+            style={[
+              styles.settingGroup,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
           >
             <View style={styles.settingRow}>
               <View style={styles.settingInfo}>
@@ -105,14 +108,20 @@ export default function SettingsScreen() {
             Notifications
           </ThemedText>
           <View
-            style={[styles.settingGroup, { backgroundColor: theme.backgroundDefault }]}
+            style={[
+              styles.settingGroup,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
           >
             <View style={styles.settingRow}>
               <View style={styles.settingInfo}>
                 <Feather name="bell" size={20} color={theme.textSecondary} />
                 <View>
                   <ThemedText type="body">Push Notifications</ThemedText>
-                  <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                  <ThemedText
+                    type="small"
+                    style={{ color: theme.textSecondary }}
+                  >
                     Receive bill reminders and budget alerts
                   </ThemedText>
                 </View>
@@ -134,14 +143,20 @@ export default function SettingsScreen() {
             Security
           </ThemedText>
           <View
-            style={[styles.settingGroup, { backgroundColor: theme.backgroundDefault }]}
+            style={[
+              styles.settingGroup,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
           >
             <View style={styles.settingRow}>
               <View style={styles.settingInfo}>
                 <Feather name="lock" size={20} color={theme.textSecondary} />
                 <View>
                   <ThemedText type="body">Biometric Lock</ThemedText>
-                  <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                  <ThemedText
+                    type="small"
+                    style={{ color: theme.textSecondary }}
+                  >
                     Use Face ID or fingerprint to unlock
                   </ThemedText>
                 </View>
@@ -163,7 +178,10 @@ export default function SettingsScreen() {
             About
           </ThemedText>
           <View
-            style={[styles.settingGroup, { backgroundColor: theme.backgroundDefault }]}
+            style={[
+              styles.settingGroup,
+              { backgroundColor: theme.backgroundDefault },
+            ]}
           >
             <View style={styles.infoRow}>
               <ThemedText type="body">Version</ThemedText>

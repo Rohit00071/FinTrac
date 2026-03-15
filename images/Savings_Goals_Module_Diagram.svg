@@ -1,0 +1,68 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Styles -->
+  <style>
+    .actor-head { fill: white; stroke: black; stroke-width: 2; }
+    .actor-body { stroke: black; stroke-width: 2; }
+    .boundary { fill: white; stroke: black; stroke-width: 2; }
+    .usecase { fill: white; stroke: black; stroke-width: 2; }
+    .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+    .label { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; text-anchor: middle; }
+    .arrow { stroke: black; stroke-width: 2; marker-end: url(#arrowhead); }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+    </marker>
+  </defs>
+
+  <!-- Actors -->
+  <!-- Registered User -->
+  <g transform="translate(50, 250)">
+    <circle cx="20" cy="20" r="20" class="actor-head" />
+    <line x1="20" y1="40" x2="20" y2="100" class="actor-body" />
+    <line x1="20" y1="50" x2="0" y2="80" class="actor-body" />
+    <line x1="20" y1="50" x2="40" y2="80" class="actor-body" />
+    <line x1="20" y1="100" x2="0" y2="140" class="actor-body" />
+    <line x1="20" y1="100" x2="40" y2="140" class="actor-body" />
+    <text x="20" y="160" class="text">Registered User</text>
+  </g>
+
+  <!-- Boundary -->
+  <rect x="150" y="50" width="500" height="500" class="boundary" />
+  <text x="400" y="80" class="label">Savings Goals Module</text>
+
+  <!-- Use Cases -->
+  <g transform="translate(400, 150)">
+    <ellipse cx="0" cy="0" rx="100" ry="30" class="usecase" />
+    <text x="0" y="5" class="text">Create Goal</text>
+  </g>
+
+  <g transform="translate(400, 230)">
+    <ellipse cx="0" cy="0" rx="100" ry="30" class="usecase" />
+    <text x="0" y="5" class="text">Add Contribution</text>
+  </g>
+
+  <g transform="translate(400, 310)">
+    <ellipse cx="0" cy="0" rx="100" ry="30" class="usecase" />
+    <text x="0" y="5" class="text">View Goal Progress</text>
+  </g>
+
+  <g transform="translate(400, 390)">
+    <ellipse cx="0" cy="0" rx="100" ry="30" class="usecase" />
+    <text x="0" y="5" class="text">Edit Goal</text>
+  </g>
+
+  <g transform="translate(400, 470)">
+    <ellipse cx="0" cy="0" rx="100" ry="30" class="usecase" />
+    <text x="0" y="5" class="text">Delete Goal</text>
+  </g>
+
+  <!-- Connections -->
+  <!-- User to Use Cases -->
+  <line x1="90" y1="280" x2="300" y2="150" class="arrow" />
+  <line x1="90" y1="290" x2="300" y2="230" class="arrow" />
+  <line x1="90" y1="300" x2="300" y2="310" class="arrow" />
+  <line x1="90" y1="310" x2="300" y2="390" class="arrow" />
+  <line x1="90" y1="320" x2="300" y2="470" class="arrow" />
+
+</svg>

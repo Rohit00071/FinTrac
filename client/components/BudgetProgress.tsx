@@ -54,7 +54,9 @@ export function BudgetProgress({ budget, onPress }: BudgetProgressProps) {
         </ThemedText>
       </View>
 
-      <View style={[styles.progressBackground, { backgroundColor: theme.border }]}>
+      <View
+        style={[styles.progressBackground, { backgroundColor: theme.border }]}
+      >
         <View
           style={[
             styles.progressFill,

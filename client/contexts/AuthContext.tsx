@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { User } from "@/types/finance";
 import { userStorage, clearAllData } from "@/lib/storage";
 
@@ -52,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (
     name: string,
     email: string,
-    _password: string
+    _password: string,
   ): Promise<boolean> => {
     try {
       const newUser = await userStorage.create(name, email);

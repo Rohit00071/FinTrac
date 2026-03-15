@@ -10,6 +10,7 @@ import TransactionsStackNavigator from "@/navigation/TransactionsStackNavigator"
 import BudgetStackNavigator from "@/navigation/BudgetStackNavigator";
 import GoalsStackNavigator from "@/navigation/GoalsStackNavigator";
 import MoreStackNavigator from "@/navigation/MoreStackNavigator";
+import AIAgentsStackNavigator from "@/navigation/AIAgentsStackNavigator";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius, Colors } from "@/constants/theme";
 
@@ -18,6 +19,7 @@ export type MainTabParamList = {
   TransactionsTab: undefined;
   BudgetTab: undefined;
   GoalsTab: undefined;
+  AIAgentsTab: undefined;
   MoreTab: undefined;
 };
 
@@ -96,6 +98,16 @@ export default function MainTabNavigator() {
           title: "Goals",
           tabBarIcon: ({ color, size }) => (
             <Feather name="star" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AIAgentsTab"
+        component={AIAgentsStackNavigator}
+        options={{
+          title: "AI Agents",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="cpu" size={size} color={color} />
           ),
         }}
       />

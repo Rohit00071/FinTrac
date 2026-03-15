@@ -42,6 +42,13 @@ export interface Account {
   balance: number;
   color: string;
   icon: string;
+  // Indian bank fields
+  bankName?: string;
+  accountNumber?: string;
+  ifscCode?: string;
+  branchName?: string;
+  upiId?: string; // e.g., username@bankname
+  isLinkedToUPI?: boolean;
 }
 
 export interface Budget {
@@ -103,8 +110,16 @@ export const ACCOUNT_CONFIG: Record<
 > = {
   cash: { label: "Cash", icon: "dollar-sign", defaultColor: "#4CAF50" },
   bank: { label: "Bank Account", icon: "credit-card", defaultColor: "#2196F3" },
-  credit: { label: "Credit Card", icon: "credit-card", defaultColor: "#9C27B0" },
-  wallet: { label: "Digital Wallet", icon: "smartphone", defaultColor: "#FF9800" },
+  credit: {
+    label: "Credit Card",
+    icon: "credit-card",
+    defaultColor: "#9C27B0",
+  },
+  wallet: {
+    label: "Digital Wallet",
+    icon: "smartphone",
+    defaultColor: "#FF9800",
+  },
 };
 
 export const AVATAR_OPTIONS = [
@@ -117,3 +132,96 @@ export const AVATAR_OPTIONS = [
   "bar-chart-2",
   "pie-chart",
 ];
+
+// AI Agent Types
+export type InvestmentType = "stocks" | "bonds" | "emergency" | "crypto" | "real-estate";
+export type RiskTolerance = "conservative" | "moderate" | "aggressive";
+
+export interface Investment {
+  id: string;
+  type: InvestmentType;
+  amount: number;
+  allocatedDate: string;
+  currentValue: number;
+  returnRate: number;
+  description: string;
+}
+
+export interface InvestmentRecommendation {
+  id: string;
+  type: InvestmentType;
+  recommendedAmount: number;
+  reason: string;
+  expectedReturn: number;
+  riskLevel: RiskTolerance;
+  createdAt: string;
+}
+
+export interface SpendingAdvice {
+  id: string;
+  dailyLimit: number;
+  todaySpent: number;
+  remainingToday: number;
+  weeklyProjection: number;
+  tips: string[];
+  alerts: string[];
+  createdAt: string;
+}
+
+export interface AIAgentSettings {
+  investmentBroker: {
+    enabled: boolean;
+    autoInvest: boolean;
+    riskTolerance: RiskTolerance;
+    minInvestmentAmount: number;
+    emergencyFundMonths: number;
+  };
+  spendingAdvisor: {
+    enabled: boolean;
+    strictMode: boolean;
+    notifyOnOverspend: boolean;
+  };
+}
+
+export const INVESTMENT_CONFIG: Record<
+  InvestmentType,
+  { label: string; icon: string; color: string; defaultReturn: number }
+> = {
+  stocks: { label: "Stocks", icon: "trending-up", color: "#4CAF50", defaultReturn: 0.08 },
+  bonds: { label: "Bonds", icon: "shield", color: "#2196F3", defaultReturn: 0.04 },
+  emergency: { label: "Emergency Fund", icon: "alert-circle", color: "#FF9800", defaultReturn: 0.01 },
+  crypto: { label: "Cryptocurrency", icon: "zap", color: "#9C27B0", defaultReturn: 0.15 },
+  "real-estate": { label: "Real Estate", icon: "home", color: "#795548", defaultReturn: 0.06 },
+};
+
+// Indian Banks List
+export const INDIAN_BANKS = [
+  'State Bank of India',
+  'HDFC Bank',
+  'ICICI Bank',
+  'Axis Bank',
+  'Kotak Mahindra Bank',
+  'Punjab National Bank',
+  'Bank of Baroda',
+  'Canara Bank',
+  'Union Bank of India',
+  'IDFC First Bank',
+  'Yes Bank',
+  'IndusInd Bank',
+  'Paytm Payments Bank',
+  'Other',
+] as const;
+
+export type IndianBank = typeof INDIAN_BANKS[number];
+
+// UPI Payment Interface
+export interface UPIPayment {
+  id: string;
+  fromUPI: string; // Sender UPI ID
+  toUPI: string; // Receiver UPI ID
+  amount: number;
+  note: string;
+  timestamp: string;
+  status: 'pending' | 'success' | 'failed';
+  transactionId: string; // UPI transaction reference
+}

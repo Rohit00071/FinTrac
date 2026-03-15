@@ -40,7 +40,8 @@ export default function AccountsScreen() {
   const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
   const { theme, isDark } = useTheme();
-  const { accounts, isLoading, refreshData, addAccount, deleteAccount } = useFinance();
+  const { accounts, isLoading, refreshData, addAccount, deleteAccount } =
+    useFinance();
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newAccountName, setNewAccountName] = useState("");
@@ -86,7 +87,7 @@ export default function AccountsScreen() {
           style: "destructive",
           onPress: () => deleteAccount(id),
         },
-      ]
+      ],
     );
   };
 
@@ -106,7 +107,10 @@ export default function AccountsScreen() {
         }
       >
         <View
-          style={[styles.totalCard, { backgroundColor: theme.backgroundDefault }]}
+          style={[
+            styles.totalCard,
+            { backgroundColor: theme.backgroundDefault },
+          ]}
         >
           <ThemedText type="small" style={{ color: theme.textSecondary }}>
             Total Balance
@@ -114,7 +118,12 @@ export default function AccountsScreen() {
           <ThemedText
             style={[
               styles.totalBalance,
-              { color: totalBalance >= 0 ? FinanceColors.income : FinanceColors.expense },
+              {
+                color:
+                  totalBalance >= 0
+                    ? FinanceColors.income
+                    : FinanceColors.expense,
+              },
             ]}
           >
             {formatCurrency(totalBalance)}
@@ -193,7 +202,10 @@ export default function AccountsScreen() {
           onPress={() => setShowAddModal(false)}
         >
           <Pressable
-            style={[styles.modalContent, { backgroundColor: theme.backgroundRoot }]}
+            style={[
+              styles.modalContent,
+              { backgroundColor: theme.backgroundRoot },
+            ]}
             onPress={(e) => e.stopPropagation()}
           >
             <ThemedText type="h4" style={styles.modalTitle}>
@@ -245,7 +257,11 @@ export default function AccountsScreen() {
                     <Feather
                       name={config.icon as any}
                       size={20}
-                      color={newAccountType === type ? theme.link : theme.textSecondary}
+                      color={
+                        newAccountType === type
+                          ? theme.link
+                          : theme.textSecondary
+                      }
                     />
                     <ThemedText type="small">{config.label}</ThemedText>
                   </Pressable>
@@ -288,7 +304,9 @@ export default function AccountsScreen() {
                       {
                         backgroundColor: color,
                         borderColor:
-                          newAccountColor === color ? theme.text : "transparent",
+                          newAccountColor === color
+                            ? theme.text
+                            : "transparent",
                         borderWidth: newAccountColor === color ? 3 : 0,
                       },
                     ]}
@@ -304,7 +322,10 @@ export default function AccountsScreen() {
             <View style={styles.modalButtons}>
               <Button
                 onPress={() => setShowAddModal(false)}
-                style={[styles.modalButton, { backgroundColor: theme.backgroundSecondary }]}
+                style={[
+                  styles.modalButton,
+                  { backgroundColor: theme.backgroundSecondary },
+                ]}
               >
                 Cancel
               </Button>

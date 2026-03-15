@@ -13,6 +13,8 @@ import {
   Goal,
   Bill,
   CategoryType,
+  Investment,
+  INVESTMENT_CONFIG,
 } from "@/types/finance";
 import {
   transactionStorage,
@@ -21,6 +23,8 @@ import {
   goalStorage,
   billStorage,
 } from "@/lib/storage";
+import { aiSettingsStorage, investmentStorage } from "@/lib/ai-storage";
+import { InvestmentBrokerAgent } from "@/lib/ai-agents";
 import { useAuth } from "./AuthContext";
 
 interface FinanceContextType {
@@ -32,11 +36,11 @@ interface FinanceContextType {
   isLoading: boolean;
   refreshData: () => Promise<void>;
   addTransaction: (
-    transaction: Omit<Transaction, "id" | "createdAt">
+    transaction: Omit<Transaction, "id" | "createdAt">,
   ) => Promise<Transaction>;
   updateTransaction: (
     id: string,
-    updates: Partial<Transaction>
+    updates: Partial<Transaction>,
   ) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
   addAccount: (account: Omit<Account, "id">) => Promise<Account>;
@@ -110,31 +114,99 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   };
 
+  const checkAutoInvest = async () => {
+    try {
+      const settings = await aiSettingsStorage.get();
+      if (!settings.investmentBroker.autoInvest) return;
+
+      // Fetch fresh data for analysis
+      const currentAccounts = await accountStorage.getAll();
+      const currentGoals = await goalStorage.getAll();
+
+      const broker = new InvestmentBrokerAgent(currentAccounts, currentGoals, settings);
+      const recs = broker.generateRecommendations();
+
+      if (recs.length > 0) {
+        const topRec = recs[0];
+        const invs = await investmentStorage.getAll();
+
+        // Deduplication: Check if invested in same type in last 24 hours
+        const recentInv = invs.find(i =>
+          i.type === topRec.type &&
+          (new Date().getTime() - new Date(i.allocatedDate).getTime()) < 24 * 60 * 60 * 1000
+        );
+
+        if (!recentInv) {
+          // Find funding account (highest balance)
+          const fundingAccount = currentAccounts.sort((a, b) => b.balance - a.balance)[0];
+
+          if (fundingAccount && fundingAccount.balance >= topRec.recommendedAmount) {
+            // 1. Add Investment
+            const newInvestment: Omit<Investment, "id"> = {
+              type: topRec.type,
+              amount: topRec.recommendedAmount,
+              allocatedDate: new Date().toISOString(),
+              currentValue: topRec.recommendedAmount,
+              returnRate: topRec.expectedReturn,
+              description: topRec.reason,
+            };
+            await investmentStorage.add(newInvestment);
+
+            // 2. Add Expense Transaction
+            // We call transactionStorage directly to avoid recursive loop with addTransaction
+            const invTxn: Omit<Transaction, "id" | "createdAt"> = {
+              type: "expense",
+              amount: topRec.recommendedAmount,
+              category: "other",
+              accountId: fundingAccount.id,
+              description: `Auto-Invest: ${INVESTMENT_CONFIG[topRec.type].label}`,
+              notes: "Triggered by income deposit",
+              date: new Date().toISOString(),
+              isRecurring: false
+            };
+
+            await transactionStorage.add(invTxn);
+            await accountStorage.updateBalance(fundingAccount.id, -topRec.recommendedAmount);
+
+            console.log("Auto-invest executed successfully");
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Auto-invest check failed:", error);
+    }
+  };
+
   const addTransaction = async (
-    transaction: Omit<Transaction, "id" | "createdAt">
+    transaction: Omit<Transaction, "id" | "createdAt">,
   ) => {
     const newTxn = await transactionStorage.add(transaction);
     setTransactions((prev) => [newTxn, ...prev]);
     const amount =
-      transaction.type === "income"
-        ? transaction.amount
-        : -transaction.amount;
+      transaction.type === "income" ? transaction.amount : -transaction.amount;
     await accountStorage.updateBalance(transaction.accountId, amount);
     if (transaction.type === "expense") {
       const month = transaction.date.substring(0, 7);
       await budgetStorage.updateSpent(
         transaction.category,
         month,
-        transaction.amount
+        transaction.amount,
       );
     }
+
+    // Trigger Auto-Invest if Income
+    if (transaction.type === "income") {
+      // We await this to ensure data consistency, though it could be backgrounded
+      await checkAutoInvest();
+    }
+
     await refreshData();
     return newTxn;
   };
 
   const updateTransaction = async (
     id: string,
-    updates: Partial<Transaction>
+    updates: Partial<Transaction>,
   ) => {
     await transactionStorage.update(id, updates);
     await refreshData();
@@ -199,7 +271,30 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   };
 
   const addGoalContribution = async (id: string, amount: number) => {
+    // 1. Update Goal
     await goalStorage.addContribution(id, amount);
+
+    // 2. Deduct from Account (Find highest balance)
+    const currentAccounts = await accountStorage.getAll();
+    const fundingAccount = currentAccounts.sort((a, b) => b.balance - a.balance)[0];
+
+    if (fundingAccount && fundingAccount.balance >= amount) {
+      const goal = goals.find(g => g.id === id);
+      await addTransaction({
+        type: "expense",
+        amount: amount,
+        category: "other", // Goals are savings
+        accountId: fundingAccount.id,
+        description: `Contribution to Goal: ${goal?.name || 'Unknown Goal'}`,
+        notes: "Manual contribution",
+        date: new Date().toISOString(),
+        isRecurring: false
+      });
+    } else {
+      console.warn("No sufficient funds to deduct for goal contribution");
+      // Optionally notify user, but for now we just log it to avoid breaking UI flow if logic differs
+    }
+
     await refreshData();
   };
 
@@ -249,7 +344,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         (t) =>
           t.type === "expense" &&
           t.category === category &&
-          t.date.startsWith(targetMonth)
+          t.date.startsWith(targetMonth),
       )
       .reduce((sum, t) => sum + t.amount, 0);
   };

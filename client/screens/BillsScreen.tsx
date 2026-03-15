@@ -43,7 +43,9 @@ export default function BillsScreen() {
 
   const unpaidBills = bills
     .filter((b) => !b.isPaid)
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+    .sort(
+      (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
+    );
   const paidBills = bills.filter((b) => b.isPaid);
 
   const onRefresh = useCallback(async () => {
@@ -112,10 +114,7 @@ export default function BillsScreen() {
         key={bill.id}
         onPress={() => !bill.isPaid && handleMarkPaid(bill)}
         onLongPress={() => handleDeleteBill(bill.id, bill.name)}
-        style={[
-          styles.billCard,
-          { backgroundColor: theme.backgroundDefault },
-        ]}
+        style={[styles.billCard, { backgroundColor: theme.backgroundDefault }]}
       >
         <View
           style={[
@@ -210,7 +209,9 @@ export default function BillsScreen() {
             {unpaidBills.length > 0 ? (
               <View style={styles.section}>
                 <View style={styles.sectionHeader}>
-                  <ThemedText type="h4">Upcoming ({unpaidBills.length})</ThemedText>
+                  <ThemedText type="h4">
+                    Upcoming ({unpaidBills.length})
+                  </ThemedText>
                   <Pressable onPress={() => setShowAddModal(true)}>
                     <Feather name="plus" size={24} color={theme.link} />
                   </Pressable>
@@ -231,7 +232,11 @@ export default function BillsScreen() {
                     { backgroundColor: theme.backgroundDefault },
                   ]}
                 >
-                  <Feather name="check" size={32} color={FinanceColors.income} />
+                  <Feather
+                    name="check"
+                    size={32}
+                    color={FinanceColors.income}
+                  />
                   <ThemedText type="body" style={{ marginTop: Spacing.sm }}>
                     All bills paid!
                   </ThemedText>
@@ -269,7 +274,10 @@ export default function BillsScreen() {
           onPress={() => setShowAddModal(false)}
         >
           <Pressable
-            style={[styles.modalContent, { backgroundColor: theme.backgroundRoot }]}
+            style={[
+              styles.modalContent,
+              { backgroundColor: theme.backgroundRoot },
+            ]}
             onPress={(e) => e.stopPropagation()}
           >
             <ThemedText type="h4" style={styles.modalTitle}>
@@ -354,7 +362,9 @@ export default function BillsScreen() {
                             ? config.color + "20"
                             : theme.backgroundDefault,
                         borderColor:
-                          newBillCategory === key ? config.color : "transparent",
+                          newBillCategory === key
+                            ? config.color
+                            : "transparent",
                         borderWidth: 2,
                       },
                     ]}
@@ -363,7 +373,9 @@ export default function BillsScreen() {
                       name={config.icon as any}
                       size={18}
                       color={
-                        newBillCategory === key ? config.color : theme.textSecondary
+                        newBillCategory === key
+                          ? config.color
+                          : theme.textSecondary
                       }
                     />
                   </Pressable>
@@ -374,7 +386,10 @@ export default function BillsScreen() {
             <View style={styles.modalButtons}>
               <Button
                 onPress={() => setShowAddModal(false)}
-                style={[styles.modalButton, { backgroundColor: theme.backgroundSecondary }]}
+                style={[
+                  styles.modalButton,
+                  { backgroundColor: theme.backgroundSecondary },
+                ]}
               >
                 Cancel
               </Button>

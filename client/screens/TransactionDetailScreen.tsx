@@ -57,7 +57,7 @@ export default function TransactionDetailScreen() {
             navigation.goBack();
           },
         },
-      ]
+      ],
     );
   };
 
@@ -151,7 +151,10 @@ export default function TransactionDetailScreen() {
 
         <Button
           onPress={handleDelete}
-          style={[styles.deleteButton, { backgroundColor: FinanceColors.expense }]}
+          style={[
+            styles.deleteButton,
+            { backgroundColor: FinanceColors.expense },
+          ]}
         >
           Delete Transaction
         </Button>

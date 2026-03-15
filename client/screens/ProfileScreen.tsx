@@ -36,8 +36,12 @@ export default function ProfileScreen() {
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
-  const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || "piggy-bank");
-  const [selectedCurrency, setSelectedCurrency] = useState(user?.currency || "USD");
+  const [selectedAvatar, setSelectedAvatar] = useState(
+    user?.avatar || "piggy-bank",
+  );
+  const [selectedCurrency, setSelectedCurrency] = useState(
+    user?.currency || "INR",
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
@@ -88,8 +92,17 @@ export default function ProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.avatarSection}>
-          <View style={[styles.currentAvatar, { backgroundColor: theme.link + "20" }]}>
-            <Feather name={selectedAvatar as any} size={48} color={theme.link} />
+          <View
+            style={[
+              styles.currentAvatar,
+              { backgroundColor: theme.link + "20" },
+            ]}
+          >
+            <Feather
+              name={selectedAvatar as any}
+              size={48}
+              color={theme.link}
+            />
           </View>
           <ThemedText type="small" style={{ color: theme.textSecondary }}>
             Choose an avatar
@@ -115,7 +128,9 @@ export default function ProfileScreen() {
                 <Feather
                   name={avatar as any}
                   size={24}
-                  color={selectedAvatar === avatar ? theme.link : theme.textSecondary}
+                  color={
+                    selectedAvatar === avatar ? theme.link : theme.textSecondary
+                  }
                 />
               </Pressable>
             ))}
@@ -226,7 +241,10 @@ export default function ProfileScreen() {
 
         <Button
           onPress={handleLogout}
-          style={[styles.logoutButton, { backgroundColor: FinanceColors.expense }]}
+          style={[
+            styles.logoutButton,
+            { backgroundColor: FinanceColors.expense },
+          ]}
         >
           Log Out
         </Button>

@@ -1,5 +1,11 @@
 import React, { useCallback } from "react";
-import { View, ScrollView, StyleSheet, RefreshControl, Pressable } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  RefreshControl,
+  Pressable,
+} from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
@@ -48,7 +54,9 @@ export default function DashboardScreen() {
   const activeGoals = goals.filter((g) => !g.isCompleted).slice(0, 3);
   const upcomingBills = bills
     .filter((b) => !b.isPaid)
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+    .sort(
+      (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
+    )
     .slice(0, 3);
 
   const onRefresh = useCallback(async () => {
@@ -124,8 +132,12 @@ export default function DashboardScreen() {
         {monthBudgets.length > 0 ? (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <ThemedText type="h4">{formatMonth(currentMonth)} Budget</ThemedText>
-              <Pressable onPress={() => navigation.navigate("BudgetTab" as any)}>
+              <ThemedText type="h4">
+                {formatMonth(currentMonth)} Budget
+              </ThemedText>
+              <Pressable
+                onPress={() => navigation.navigate("BudgetTab" as any)}
+              >
                 <ThemedText type="link">View All</ThemedText>
               </Pressable>
             </View>
@@ -182,12 +194,15 @@ export default function DashboardScreen() {
                   <ThemedText type="body" style={{ fontWeight: "500" }}>
                     {bill.name}
                   </ThemedText>
-                  <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                  <ThemedText
+                    type="small"
+                    style={{ color: theme.textSecondary }}
+                  >
                     Due {new Date(bill.dueDate).toLocaleDateString()}
                   </ThemedText>
                 </View>
                 <ThemedText type="body" style={{ fontWeight: "600" }}>
-                  ${bill.amount.toFixed(2)}
+                  ₹{bill.amount.toFixed(2)}
                 </ThemedText>
               </View>
             ))}

@@ -20,7 +20,10 @@ interface TransactionItemProps {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function TransactionItem({ transaction, onPress }: TransactionItemProps) {
+export function TransactionItem({
+  transaction,
+  onPress,
+}: TransactionItemProps) {
   const { theme } = useTheme();
   const scale = useSharedValue(1);
 
@@ -48,7 +51,10 @@ export function TransactionItem({ transaction, onPress }: TransactionItemProps) 
       ]}
     >
       <View
-        style={[styles.iconContainer, { backgroundColor: categoryConfig.color + "20" }]}
+        style={[
+          styles.iconContainer,
+          { backgroundColor: categoryConfig.color + "20" },
+        ]}
       >
         <Feather
           name={categoryConfig.icon as any}

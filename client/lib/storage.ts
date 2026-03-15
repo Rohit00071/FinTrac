@@ -53,7 +53,7 @@ export const userStorage = {
       name,
       email,
       avatar: "piggy-bank",
-      currency: "USD",
+      currency: "INR",
       createdAt: new Date().toISOString(),
     };
     await setItem(STORAGE_KEYS.USER, user);
@@ -67,7 +67,7 @@ export const transactionStorage = {
     return data || [];
   },
   add: async (
-    transaction: Omit<Transaction, "id" | "createdAt">
+    transaction: Omit<Transaction, "id" | "createdAt">,
   ): Promise<Transaction> => {
     const transactions = await transactionStorage.getAll();
     const newTransaction: Transaction = {
@@ -81,7 +81,7 @@ export const transactionStorage = {
   },
   update: async (
     id: string,
-    updates: Partial<Transaction>
+    updates: Partial<Transaction>,
   ): Promise<Transaction | null> => {
     const transactions = await transactionStorage.getAll();
     const index = transactions.findIndex((t) => t.id === id);
@@ -135,7 +135,7 @@ export const accountStorage = {
   },
   update: async (
     id: string,
-    updates: Partial<Account>
+    updates: Partial<Account>,
   ): Promise<Account | null> => {
     const accounts = await accountStorage.getAll();
     const index = accounts.findIndex((a) => a.id === id);
@@ -179,7 +179,7 @@ export const budgetStorage = {
   },
   update: async (
     id: string,
-    updates: Partial<Budget>
+    updates: Partial<Budget>,
   ): Promise<Budget | null> => {
     const budgets = await budgetStorage.getAll();
     const index = budgets.findIndex((b) => b.id === id);
@@ -191,7 +191,7 @@ export const budgetStorage = {
   updateSpent: async (category: string, month: string, amount: number) => {
     const budgets = await budgetStorage.getAll();
     const index = budgets.findIndex(
-      (b) => b.category === category && b.month === month
+      (b) => b.category === category && b.month === month,
     );
     if (index !== -1) {
       budgets[index].spent += amount;
@@ -295,7 +295,7 @@ export const settingsStorage = {
     return (
       data || {
         theme: "system",
-        currency: "USD",
+        currency: "INR",
         notifications: true,
         biometricLock: false,
       }
