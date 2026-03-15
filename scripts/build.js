@@ -41,10 +41,14 @@ function getDeploymentUrl() {
     return url;
   }
 
-  console.error(
-    "ERROR: REPLIT_INTERNAL_APP_DOMAIN and REPLIT_DEV_DOMAIN not set",
-  );
-  process.exit(1);
+  if (process.env.EXPO_PUBLIC_DOMAIN) {
+    const url = `https://${process.env.EXPO_PUBLIC_DOMAIN}`;
+    console.log("Using EXPO_PUBLIC_DOMAIN:", url);
+    return url;
+  }
+
+  console.log("WARNING: Deployment domains not set, falling back to localhost");
+  return "http://localhost:5000";
 }
 
 function prepareDirectories(timestamp) {
