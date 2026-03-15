@@ -176,6 +176,12 @@ function configureExpoAndLanding(app: express.Application) {
       return next();
     }
 
+    // Check if web build exists and serve it at root
+    const webBuildPath = path.resolve(process.cwd(), "dist", "index.html");
+    if (req.path === "/" && fs.existsSync(webBuildPath)) {
+      return res.sendFile(webBuildPath);
+    }
+
     const platform = req.header("expo-platform");
     if (platform && (platform === "ios" || platform === "android")) {
       return serveExpoManifest(platform, res);
@@ -195,6 +201,7 @@ function configureExpoAndLanding(app: express.Application) {
 
   app.use("/assets", express.static(path.resolve(process.cwd(), "assets")));
   app.use(express.static(path.resolve(process.cwd(), "static-build")));
+  app.use(express.static(path.resolve(process.cwd(), "dist")));
 
   log("Expo routing: Checking expo-platform header on / and /manifest");
 }
