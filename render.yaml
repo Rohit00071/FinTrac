@@ -1,44 +1,42 @@
-services:
-  # 1. PostgreSQL Database
-  - type: database
-    name: fintrack-db
-    databaseName: fintrack
-    user: admin
-    plan: free
+databases:
+  - name: fintrack-db
+      databaseName: fintrack
+          user: admin
+              plan: free
 
-  # 2. AI Service (Python)
-  - type: web
-    name: fintrack-ai
-    env: python
-    plan: free
-    rootDir: ai_service
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.0
+              services:
+                # 2. AI Service (Python)
+                  - type: web
+                      name: fintrack-ai
+                          env: python
+                              plan: free
+                                  rootDir: ai_service
+                                      buildCommand: pip install -r requirements.txt
+                                          startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+                                              envVars:
+                                                    - key: PYTHON_VERSION
+                                                            value: 3.9.0
 
-  # 3. Main Application (Node.js + Web)
-  - type: web
-    name: fintrack-main
-    env: node
-    plan: free
-    buildCommand: npm install && npm run server:build && npm run expo:static:build
-    startCommand: npm run server:prod
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: fintrack-db
-          property: connectionString
-      - key: EXPO_PUBLIC_AI_SERVICE_URL
-        fromService:
-          type: web
-          name: fintrack-ai
-          property: host
-      - key: EXPO_PUBLIC_DOMAIN
-        fromService:
-          type: web
-          name: fintrack-main
-          property: host
-      - key: NODE_ENV
-        value: production
+                                                              # 3. Main Application (Node.js + Web)
+                                                                - type: web
+                                                                    name: fintrack-main
+                                                                        env: node
+                                                                            plan: free
+                                                                                buildCommand: npm install && npm run server:build && npm run expo:static:build
+                                                                                    startCommand: npm run server:prod
+                                                                                        envVars:
+                                                                                              - key: DATABASE_URL
+                                                                                                      fromDatabase:
+                                                                                                                name: fintrack-db
+                                                                                                                          property: connectionString
+                                                                                                                                - key: EXPO_PUBLIC_AI_SERVICE_URL
+                                                                                                                                        fromService:
+                                                                                                                                                  type: web
+                                                                                                                                                            name: fintrack-ai
+                                                                                                                                                                      property: host
+                                                                                                                                                                            - key: EXPO_PUBLIC_DOMAIN
+                                                                                                                                                                                    fromService:
+                                                                                                                                                                                              type: web
+                                                                                                                                                                                                        name: fintrack-main
+                                                                                                                                                                                                                  property: host
+                                                                                                                                                                                                                  
