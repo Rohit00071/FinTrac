@@ -104,49 +104,61 @@ export default function AddTransactionScreen() {
         showsVerticalScrollIndicator={false}
       >
         <AdaptiveContainer>
-          <View style={styles.typeToggle}>
+          <View style={{ flexDirection: 'row', width: '100%', height: 60, marginBottom: 20, gap: 12 }}>
             <Pressable
               onPress={() => setType("expense")}
-              style={[
-                styles.typeButton,
-                {
-                  backgroundColor: type === "expense" ? FinanceColors.expense : theme.backgroundSecondary,
-                },
-              ]}
+              style={{
+                flex: 1,
+                height: 60,
+                backgroundColor: type === "expense" ? "#F44336" : "#333",
+                borderRadius: 12,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingHorizontal: 10,
+              }}
             >
               <Feather
                 name="arrow-down-left"
-                size={20}
-                color={type === "expense" ? "#FFFFFF" : theme.text}
+                size={24}
+                color="#FFFFFF"
               />
               <ThemedText
-                style={[
-                  styles.typeButtonText,
-                  { color: type === "expense" ? "#FFFFFF" : theme.text },
-                ]}
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: 18,
+                  fontWeight: "800",
+                  marginLeft: 8,
+                }}
               >
                 Expense
               </ThemedText>
             </Pressable>
             <Pressable
               onPress={() => setType("income")}
-              style={[
-                styles.typeButton,
-                {
-                  backgroundColor: type === "income" ? FinanceColors.income : theme.backgroundSecondary,
-                },
-              ]}
+              style={{
+                flex: 1,
+                height: 60,
+                backgroundColor: type === "income" ? "#4CAF50" : "#333",
+                borderRadius: 12,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingHorizontal: 10,
+              }}
             >
               <Feather
                 name="arrow-up-right"
-                size={20}
-                color={type === "income" ? "#FFFFFF" : theme.text}
+                size={24}
+                color="#FFFFFF"
               />
               <ThemedText
-                style={[
-                  styles.typeButtonText,
-                  { color: type === "income" ? "#FFFFFF" : theme.text },
-                ]}
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: 18,
+                  fontWeight: "800",
+                  marginLeft: 8,
+                }}
               >
                 Income
               </ThemedText>

@@ -51,7 +51,6 @@ export default function RootStackNavigator() {
             name="AddTransaction"
             component={AddTransactionScreen}
             options={{
-              presentation: "modal",
               headerTitle: "Add Transaction",
             }}
           />
