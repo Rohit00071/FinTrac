@@ -97,7 +97,7 @@ export default function AddTransactionScreen() {
         contentContainerStyle={[
           styles.content,
           {
-            paddingTop: Spacing.xl,
+            paddingTop: Math.max(insets.top, Spacing.xl),
             paddingBottom: Spacing.xl,
           },
         ]}
@@ -113,7 +113,7 @@ export default function AddTransactionScreen() {
                   backgroundColor:
                     type === "expense"
                       ? FinanceColors.expense
-                      : theme.backgroundDefault,
+                      : theme.backgroundSecondary,
                 },
               ]}
             >
@@ -139,7 +139,7 @@ export default function AddTransactionScreen() {
                   backgroundColor:
                     type === "income"
                       ? FinanceColors.income
-                      : theme.backgroundDefault,
+                      : theme.backgroundSecondary,
                 },
               ]}
             >
@@ -391,6 +391,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: Spacing.md,
     marginBottom: Spacing.xl,
+    width: "100%",
+    minHeight: 52,
   },
   typeButton: {
     flex: 1,

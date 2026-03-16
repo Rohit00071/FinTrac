@@ -37,14 +37,11 @@ const styles = StyleSheet.create({
   outerContainer: {
     width: '100%',
     alignItems: 'center',
-    flex: 1,
   },
   innerContainer: {
     width: '100%',
-    flex: 1,
   },
   fluid: {
     width: '100%',
-    flex: 1,
   }
 });
