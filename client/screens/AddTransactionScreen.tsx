@@ -110,52 +110,50 @@ export default function AddTransactionScreen() {
               style={[
                 styles.typeButton,
                 {
-                  backgroundColor:
-                    type === "expense"
-                      ? FinanceColors.expense
-                      : theme.backgroundSecondary,
+                  backgroundColor: type === "expense" ? FinanceColors.expense : theme.backgroundSecondary,
                 },
               ]}
             >
-              <Feather
-                name="arrow-down-left"
-                size={20}
-                color={type === "expense" ? "#FFFFFF" : theme.text}
-              />
-              <ThemedText
-                style={[
-                  styles.typeButtonText,
-                  { color: type === "expense" ? "#FFFFFF" : theme.text },
-                ]}
-              >
-                Expense
-              </ThemedText>
+              <View style={styles.typeButtonContent}>
+                <Feather
+                  name="arrow-down-left"
+                  size={20}
+                  color={type === "expense" ? "#FFFFFF" : theme.text}
+                />
+                <ThemedText
+                  style={[
+                    styles.typeButtonText,
+                    { color: type === "expense" ? "#FFFFFF" : theme.text },
+                  ]}
+                >
+                  Expense
+                </ThemedText>
+              </View>
             </Pressable>
             <Pressable
               onPress={() => setType("income")}
               style={[
                 styles.typeButton,
                 {
-                  backgroundColor:
-                    type === "income"
-                      ? FinanceColors.income
-                      : theme.backgroundSecondary,
+                  backgroundColor: type === "income" ? FinanceColors.income : theme.backgroundSecondary,
                 },
               ]}
             >
-              <Feather
-                name="arrow-up-right"
-                size={20}
-                color={type === "income" ? "#FFFFFF" : theme.text}
-              />
-              <ThemedText
-                style={[
-                  styles.typeButtonText,
-                  { color: type === "income" ? "#FFFFFF" : theme.text },
-                ]}
-              >
-                Income
-              </ThemedText>
+              <View style={styles.typeButtonContent}>
+                <Feather
+                  name="arrow-up-right"
+                  size={20}
+                  color={type === "income" ? "#FFFFFF" : theme.text}
+                />
+                <ThemedText
+                  style={[
+                    styles.typeButtonText,
+                    { color: type === "income" ? "#FFFFFF" : theme.text },
+                  ]}
+                >
+                  Income
+                </ThemedText>
+              </View>
             </Pressable>
           </View>
 
@@ -396,16 +394,21 @@ const styles = StyleSheet.create({
   },
   typeButton: {
     flex: 1,
+    height: 56,
+    borderRadius: BorderRadius.md,
+    overflow: "hidden",
+  },
+  typeButtonContent: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: Spacing.sm,
-    height: 52,
-    borderRadius: BorderRadius.md,
+    paddingHorizontal: Spacing.md,
   },
   typeButtonText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   errorContainer: {
     padding: Spacing.md,
