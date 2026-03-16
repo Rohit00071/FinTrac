@@ -26,6 +26,8 @@ services:
           name: fintrack-db
           property: connectionString
       - key: EXPO_PUBLIC_AI_SERVICE_URL
+        value: "/api"
+      - key: AI_SERVICE_INTERNAL_URL
         fromService:
           type: web
           name: fintrack-ai

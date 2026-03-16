@@ -12,7 +12,21 @@ import {
     INVESTMENT_CONFIG,
 } from "@/types/finance";
 
-const AI_SERVICE_URL = process.env.EXPO_PUBLIC_AI_SERVICE_URL || "http://localhost:8000";
+const getAiServiceUrl = () => {
+  const url = process.env.EXPO_PUBLIC_AI_SERVICE_URL;
+  if (!url) {
+    // If we're on web, default to our own backend proxy
+    return typeof window !== "undefined" ? "/api" : "http://localhost:8000";
+  }
+  // If it's a relative path, use it as is
+  if (url.startsWith("/")) return url;
+  // If it's an absolute URL with protocol, use it
+  if (url.startsWith("http")) return url;
+  // If it's just a hostname (like from Render), add https
+  return `https://${url}`;
+};
+
+const AI_SERVICE_URL = getAiServiceUrl();
 
 export interface AIAnalysisResult {
     insights: string[];
