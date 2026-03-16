@@ -200,8 +200,18 @@ function configureExpoAndLanding(app: express.Application) {
   });
 
   app.use("/assets", express.static(path.resolve(process.cwd(), "assets")));
-  app.use(express.static(path.resolve(process.cwd(), "static-build")));
   app.use(express.static(path.resolve(process.cwd(), "dist")));
+  app.use(express.static(path.resolve(process.cwd(), "static-build")));
+
+  // Fallback for SPA routing in web build
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api")) return next();
+    const webBuildPath = path.resolve(process.cwd(), "dist", "index.html");
+    if (fs.existsSync(webBuildPath)) {
+      return res.sendFile(webBuildPath);
+    }
+    next();
+  });
 
   log("Expo routing: Checking expo-platform header on / and /manifest");
 }

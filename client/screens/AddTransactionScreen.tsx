@@ -114,21 +114,19 @@ export default function AddTransactionScreen() {
                 },
               ]}
             >
-              <View style={styles.typeButtonContent}>
-                <Feather
-                  name="arrow-down-left"
-                  size={20}
-                  color={type === "expense" ? "#FFFFFF" : theme.text}
-                />
-                <ThemedText
-                  style={[
-                    styles.typeButtonText,
-                    { color: type === "expense" ? "#FFFFFF" : theme.text },
-                  ]}
-                >
-                  Expense
-                </ThemedText>
-              </View>
+              <Feather
+                name="arrow-down-left"
+                size={20}
+                color={type === "expense" ? "#FFFFFF" : theme.text}
+              />
+              <ThemedText
+                style={[
+                  styles.typeButtonText,
+                  { color: type === "expense" ? "#FFFFFF" : theme.text },
+                ]}
+              >
+                Expense
+              </ThemedText>
             </Pressable>
             <Pressable
               onPress={() => setType("income")}
@@ -139,21 +137,19 @@ export default function AddTransactionScreen() {
                 },
               ]}
             >
-              <View style={styles.typeButtonContent}>
-                <Feather
-                  name="arrow-up-right"
-                  size={20}
-                  color={type === "income" ? "#FFFFFF" : theme.text}
-                />
-                <ThemedText
-                  style={[
-                    styles.typeButtonText,
-                    { color: type === "income" ? "#FFFFFF" : theme.text },
-                  ]}
-                >
-                  Income
-                </ThemedText>
-              </View>
+              <Feather
+                name="arrow-up-right"
+                size={20}
+                color={type === "income" ? "#FFFFFF" : theme.text}
+              />
+              <ThemedText
+                style={[
+                  styles.typeButtonText,
+                  { color: type === "income" ? "#FFFFFF" : theme.text },
+                ]}
+              >
+                Income
+              </ThemedText>
             </Pressable>
           </View>
 
@@ -394,21 +390,18 @@ const styles = StyleSheet.create({
   },
   typeButton: {
     flex: 1,
-    height: 56,
+    height: 64,
     borderRadius: BorderRadius.md,
-    overflow: "hidden",
-  },
-  typeButtonContent: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: Spacing.sm,
-    paddingHorizontal: Spacing.md,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.1)",
   },
   typeButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
+    fontSize: 18,
+    fontWeight: "800",
   },
   errorContainer: {
     padding: Spacing.md,
