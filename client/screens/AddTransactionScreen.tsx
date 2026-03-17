@@ -8,6 +8,7 @@ import {
   Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 
@@ -36,6 +37,7 @@ const CATEGORIES = Object.entries(CATEGORY_CONFIG) as [
 
 export default function AddTransactionScreen() {
   const insets = useSafeAreaInsets();
+  const headerHeight = useHeaderHeight();
   const { theme, isDark } = useTheme();
   const navigation = useNavigation();
   const route = useRoute<RouteType>();
@@ -97,8 +99,8 @@ export default function AddTransactionScreen() {
         contentContainerStyle={[
           styles.content,
           {
-            paddingTop: Math.max(insets.top, Spacing.xl),
-            paddingBottom: Spacing.xl,
+            paddingTop: headerHeight + Spacing.lg,
+            paddingBottom: insets.bottom + Spacing["2xl"],
           },
         ]}
         showsVerticalScrollIndicator={false}
@@ -362,11 +364,11 @@ export default function AddTransactionScreen() {
           },
         ]}
       >
-        <AdaptiveContainer 
-            style={{ 
-                flexDirection: 'row', 
-                paddingHorizontal: 0 
-            }}
+        <AdaptiveContainer
+          style={{
+            flexDirection: 'row',
+            paddingHorizontal: 0
+          }}
         >
           <Button
             onPress={handleSave}
@@ -395,10 +397,14 @@ const styles = StyleSheet.create({
   },
   typeToggle: {
     flexDirection: "row",
+    paddingHorizontal: Spacing.sm,
     gap: Spacing.md,
     marginBottom: Spacing.xl,
     width: "100%",
+<<<<<<< HEAD
     minHeight: 52,
+=======
+>>>>>>> 6c1c637 (Fix UI overlap issues on web: add dynamic header padding to mobile/web screens)
   },
   typeButton: {
     flex: 1,
@@ -408,12 +414,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: Spacing.sm,
+<<<<<<< HEAD
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.1)",
   },
   typeButtonText: {
     fontSize: 18,
     fontWeight: "800",
+=======
+    height: 60,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  typeButtonText: {
+    fontSize: 18,
+    fontWeight: "700",
+>>>>>>> 6c1c637 (Fix UI overlap issues on web: add dynamic header padding to mobile/web screens)
   },
   errorContainer: {
     padding: Spacing.md,

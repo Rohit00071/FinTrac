@@ -8,6 +8,7 @@ import {
   Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 
@@ -44,6 +45,7 @@ const GOAL_COLORS = [
 
 export default function AddGoalScreen() {
   const insets = useSafeAreaInsets();
+  const headerHeight = useHeaderHeight();
   const { theme, isDark } = useTheme();
   const navigation = useNavigation();
   const { addGoal } = useFinance();
@@ -97,7 +99,7 @@ export default function AddGoalScreen() {
         contentContainerStyle={[
           styles.content,
           {
-            paddingTop: Spacing.xl,
+            paddingTop: headerHeight + Spacing.lg,
             paddingBottom: insets.bottom + Spacing["2xl"],
           },
         ]}

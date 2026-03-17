@@ -8,6 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import Svg, { Circle } from "react-native-svg";
@@ -32,6 +33,7 @@ type RouteType = RouteProp<GoalsStackParamList, "GoalDetail">;
 
 export default function GoalDetailScreen() {
   const insets = useSafeAreaInsets();
+  const headerHeight = useHeaderHeight();
   const { theme, isDark } = useTheme();
   const navigation = useNavigation();
   const route = useRoute<RouteType>();
@@ -98,7 +100,7 @@ export default function GoalDetailScreen() {
         contentContainerStyle={[
           styles.content,
           {
-            paddingTop: Spacing.xl,
+            paddingTop: headerHeight + Spacing.lg,
             paddingBottom: insets.bottom + Spacing["2xl"],
           },
         ]}
