@@ -401,27 +401,13 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
     marginBottom: Spacing.xl,
     width: "100%",
-<<<<<<< HEAD
-    minHeight: 52,
-=======
->>>>>>> 6c1c637 (Fix UI overlap issues on web: add dynamic header padding to mobile/web screens)
   },
   typeButton: {
     flex: 1,
-    height: 64,
-    borderRadius: BorderRadius.md,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: Spacing.sm,
-<<<<<<< HEAD
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-  },
-  typeButtonText: {
-    fontSize: 18,
-    fontWeight: "800",
-=======
     height: 60,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
@@ -430,7 +416,6 @@ const styles = StyleSheet.create({
   typeButtonText: {
     fontSize: 18,
     fontWeight: "700",
->>>>>>> 6c1c637 (Fix UI overlap issues on web: add dynamic header padding to mobile/web screens)
   },
   errorContainer: {
     padding: Spacing.md,
