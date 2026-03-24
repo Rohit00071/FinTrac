@@ -134,7 +134,7 @@ export const AVATAR_OPTIONS = [
 ];
 
 // AI Agent Types
-export type InvestmentType = "stocks" | "bonds" | "emergency" | "crypto" | "real-estate";
+export type InvestmentType = "stocks" | "bonds" | "emergency" | "crypto" | "real_estate" | "cash";
 export type RiskTolerance = "conservative" | "moderate" | "aggressive";
 
 export interface Investment {
@@ -191,7 +191,8 @@ export const INVESTMENT_CONFIG: Record<
   bonds: { label: "Bonds", icon: "shield", color: "#2196F3", defaultReturn: 0.04 },
   emergency: { label: "Emergency Fund", icon: "alert-circle", color: "#FF9800", defaultReturn: 0.01 },
   crypto: { label: "Cryptocurrency", icon: "zap", color: "#9C27B0", defaultReturn: 0.15 },
-  "real-estate": { label: "Real Estate", icon: "home", color: "#795548", defaultReturn: 0.06 },
+  real_estate: { label: "Real Estate", icon: "home", color: "#795548", defaultReturn: 0.06 },
+  cash: { label: "Cash (Liquidity)", icon: "dollar-sign", color: "#607D8B", defaultReturn: 0.02 },
 };
 
 // Indian Banks List

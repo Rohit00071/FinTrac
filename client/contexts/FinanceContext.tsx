@@ -93,8 +93,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       setBills(bls);
 
       // Perform AI Analysis
+      console.log("[FinanceContext] Fetching AI Analysis...");
       const settings = await aiSettingsStorage.get();
       const analysis = await fetchAIAnalysis(txns, accts, bdgts, settings);
+      console.log("[FinanceContext] AI Analysis complete:", !!analysis);
       setAiAnalysis(analysis);
     } catch (error) {
       console.error("Error refreshing data:", error);

@@ -50,6 +50,7 @@ export default function InvestmentBrokerScreen() {
 
     const loadData = async () => {
         try {
+            console.log("[InvestmentBroker] Loading data, aiAnalysis exists:", !!aiAnalysis);
             setIsLoading(true);
             const settings = await aiSettingsStorage.get();
             setAutoInvest(settings.investmentBroker.autoInvest);
@@ -66,6 +67,7 @@ export default function InvestmentBrokerScreen() {
 
             // Generate recommendations
             const recs = broker.generateRecommendations();
+            console.log("[InvestmentBroker] Generated recommendations:", recs.length, recs);
             setRecommendations(recs);
 
             // Save recommendations
@@ -283,7 +285,7 @@ export default function InvestmentBrokerScreen() {
                     </Text>
                 ) : (
                     recommendations.map((rec) => {
-                        const config = INVESTMENT_CONFIG[rec.type];
+                        const config = INVESTMENT_CONFIG[rec.type] || INVESTMENT_CONFIG.cash;
                         return (
                             <View
                                 key={rec.id}
@@ -334,7 +336,7 @@ export default function InvestmentBrokerScreen() {
                         Current Investments
                     </Text>
                     {investments.map((inv) => {
-                        const config = INVESTMENT_CONFIG[inv.type];
+                        const config = INVESTMENT_CONFIG[inv.type] || INVESTMENT_CONFIG.cash;
                         const returnAmount = inv.currentValue - inv.amount;
                         const returnPercentage = (returnAmount / inv.amount) * 100;
 
