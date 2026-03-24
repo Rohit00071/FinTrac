@@ -18,7 +18,7 @@ services:
     name: fintrack-main
     env: node
     plan: free
-    buildCommand: npm install && npm run server:build && npm run expo:web:build && npm run expo:static:build
+    buildCommand: npm install && npm run server:build && npm run expo:web:build
     startCommand: npm run server:prod
     envVars:
       - key: DATABASE_URL
