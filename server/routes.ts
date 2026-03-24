@@ -7,7 +7,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const getAiTarget = () => {
     const internalUrl = process.env.AI_SERVICE_INTERNAL_URL;
     if (internalUrl) {
-      return internalUrl.startsWith("http") ? internalUrl : `https://${internalUrl}`;
+      // Internal Render services should use http and require the port we specified (8000)
+      if (internalUrl.startsWith("http")) return internalUrl;
+      // If just a hostname was provided (e.g. 'fintrack-ai'), add http and port 8000
+      return internalUrl.includes(":") ? `http://${internalUrl}` : `http://${internalUrl}:8000`;
     }
     const publicUrl = process.env.EXPO_PUBLIC_AI_SERVICE_URL;
     if (publicUrl && publicUrl.startsWith("http")) {
