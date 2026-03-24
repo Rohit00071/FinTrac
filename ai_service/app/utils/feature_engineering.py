@@ -35,9 +35,13 @@ def extract_features(transactions, accounts, budgets):
     income_std = income_df.resample('ME', on='date')['amount'].sum().std() if not income_df.empty else 0
     income_stability = 1 - (income_std / monthly_income) if monthly_income > 0 else 1
     
+    # Total Savings from Accounts
+    total_savings = sum(acc.get('balance', 0) for acc in accounts) if accounts else 0
+    
     return {
         "monthly_income": float(monthly_income),
         "monthly_expense": float(monthly_expense),
+        "total_savings": float(total_savings),
         "saving_rate": float(saving_rate),
         "spending_volatility": float(spending_volatility) if not np.isnan(spending_volatility) else 0,
         "category_distribution": category_dist,
