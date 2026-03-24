@@ -6,6 +6,20 @@ def analyze_behavior(transactions):
         return {"insights": [], "warnings": []}
 
     df = pd.DataFrame(transactions)
+    if df.empty:
+        return {"insights": [], "warnings": []}
+
+    # Ensure required columns exist with defaults
+    if 'category' not in df.columns:
+        df['category'] = 'other'
+    else:
+        df['category'] = df['category'].fillna('other')
+
+    if 'description' not in df.columns:
+        df['description'] = 'No description'
+    else:
+        df['description'] = df['description'].fillna('No description')
+
     df['date'] = pd.to_datetime(df['date'])
     df['amount'] = pd.to_numeric(df['amount'])
     

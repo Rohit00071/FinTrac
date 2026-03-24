@@ -7,8 +7,21 @@ def extract_features(transactions, accounts, budgets):
         return {}
     
     df = pd.DataFrame(transactions)
+    if df.empty:
+        return {}
+        
+    # Ensure required columns exist with defaults
+    if 'category' not in df.columns:
+        df['category'] = 'other'
+    else:
+        df['category'] = df['category'].fillna('other')
+        
+    if 'amount' not in df.columns:
+        df['amount'] = 0
+    else:
+        df['amount'] = pd.to_numeric(df['amount']).fillna(0)
+        
     df['date'] = pd.to_datetime(df['date'])
-    df['amount'] = pd.to_numeric(df['amount'])
     
     # Basic aggregations
     income_df = df[df['type'] == 'income']

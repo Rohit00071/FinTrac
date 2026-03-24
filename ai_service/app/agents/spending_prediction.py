@@ -7,6 +7,11 @@ def predict_spending(transactions):
         return {"predicted_spending_30d": 0, "category_predictions": {}}
 
     df = pd.DataFrame(transactions)
+    if 'category' not in df.columns:
+        df['category'] = 'other'
+    else:
+        df['category'] = df['category'].fillna('other')
+
     df = df[df['type'] == 'expense']
     
     if df.empty or len(df) < 5:
