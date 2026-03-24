@@ -3,10 +3,11 @@ import { v4 as uuidv4 } from "uuid";
 
 // Storage keys
 const STORAGE_KEYS = {
-    TRANSACTIONS: "@fintrac/transactions",
-    ACCOUNTS: "@fintrac/accounts",
-    BUDGETS: "@fintrac/budgets",
-    GOALS: "@fintrac/goals",
+    USER: "@fintrack_user",
+    TRANSACTIONS: "@fintrack_transactions",
+    ACCOUNTS: "@fintrack_accounts",
+    BUDGETS: "@fintrack_budgets",
+    GOALS: "@fintrack_goals",
 };
 
 // Helper to generate ID
@@ -340,7 +341,18 @@ export async function createTestData() {
         },
     ];
 
+    // Create a test user if not exists
+    const user = {
+        id: "test-user-rohit",
+        name: "Rohit",
+        email: "rohit@test.com",
+        avatar: "piggy-bank",
+        currency: "INR",
+        createdAt: new Date().toISOString(),
+    };
+
     // Save all test data
+    await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
     await AsyncStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
     await AsyncStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
     await AsyncStorage.setItem(STORAGE_KEYS.BUDGETS, JSON.stringify(budgets));

@@ -135,7 +135,7 @@ export class SpendingAdvisorAgent {
             todaySpent: todaySpent,
             remainingToday: -todaySpent,
             weeklyProjection: 0,
-            tips: ["AI Service currently unavailable. Check your connection."],
+            tips: ["Analyzing your spending patterns... Please check back in a moment."],
             alerts: [],
             createdAt: new Date().toISOString(),
         };
@@ -148,7 +148,7 @@ export class SpendingAdvisorAgent {
             todaySpent: todaySpent,
             remainingToday: this.analysis.daily_spending_limit - todaySpent,
             weeklyProjection: (this.analysis.prediction_details.predicted_spending_30d / 30) * 7,
-            tips: this.analysis.insights,
+            tips: [...this.analysis.insights, ...this.analysis.recommendations],
             alerts: this.analysis.warnings,
             createdAt: new Date().toISOString(),
         };

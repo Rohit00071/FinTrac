@@ -18,7 +18,7 @@ def analyze_behavior(transactions):
     
     # 1. Detect Category Spikes
     current_month = expense_df[expense_df['date'].dt.month == datetime.now().month]
-    prev_month = expense_df[expense_df['date'].dt.month == (datetime.now().month - 1) % 12 or 12]
+    prev_month = expense_df[expense_df['date'].dt.month == ((datetime.now().month - 1) % 12 or 12)]
     
     curr_cat = current_month.groupby('category')['amount'].sum()
     prev_cat = prev_month.groupby('category')['amount'].sum()
