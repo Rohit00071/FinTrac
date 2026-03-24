@@ -54,7 +54,7 @@ export default function InvestmentBrokerScreen() {
             const settings = await aiSettingsStorage.get();
             setAutoInvest(settings.investmentBroker.autoInvest);
 
-            const broker = new InvestmentBrokerAgent(aiAnalysis, settings);
+            const broker = new InvestmentBrokerAgent(aiAnalysis, settings, accounts);
 
             // Load investments
             const invs = await investmentStorage.getAll();

@@ -73,58 +73,85 @@ export default function MoreScreen() {
   };
 
   const handleLoadTestData = async () => {
-    Alert.alert(
-      "Load Test Data",
-      "This will add sample financial data to test AI agents. Continue?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Load Data",
-          onPress: async () => {
-            setIsLoadingData(true);
-            try {
-              await createTestData();
-              await refreshData();
-              Alert.alert(
-                "Success",
-                "Test data loaded! Check AI Agents tab to see recommendations."
-              );
-            } catch (error) {
-              Alert.alert("Error", "Failed to load test data");
-            } finally {
-              setIsLoadingData(false);
-            }
-          },
-        },
-      ]
-    );
+    const isWeb = typeof window !== "undefined" && typeof (window as any).confirm === "function";
+
+    const doLoad = async () => {
+      setIsLoadingData(true);
+      try {
+        await createTestData();
+        await refreshData();
+        if (isWeb) {
+          window.alert("✅ Test data loaded! Check AI Agents for recommendations.");
+        } else {
+          Alert.alert("Success", "Test data loaded! Check AI Agents tab to see recommendations.");
+        }
+      } catch (error) {
+        if (isWeb) {
+          window.alert("❌ Failed to load test data. Check the browser console.");
+        } else {
+          Alert.alert("Error", "Failed to load test data");
+        }
+      } finally {
+        setIsLoadingData(false);
+      }
+    };
+
+    if (isWeb) {
+      if (window.confirm("Load sample financial data to test AI agents?")) {
+        await doLoad();
+      }
+    } else {
+      Alert.alert(
+        "Load Test Data",
+        "This will add sample financial data to test AI agents. Continue?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Load Data", onPress: doLoad },
+        ]
+      );
+    }
   };
 
   const handleClearData = async () => {
-    Alert.alert(
-      "Clear All Data",
-      "This will delete ALL financial data. This cannot be undone!",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Clear All",
-          style: "destructive",
-          onPress: async () => {
-            setIsLoadingData(true);
-            try {
-              await clearAllData();
-              await refreshData();
-              Alert.alert("Success", "All data cleared");
-            } catch (error) {
-              Alert.alert("Error", "Failed to clear data");
-            } finally {
-              setIsLoadingData(false);
-            }
-          },
-        },
-      ]
-    );
+    const isWeb = typeof window !== "undefined" && typeof (window as any).confirm === "function";
+
+    const doClear = async () => {
+      setIsLoadingData(true);
+      try {
+        await clearAllData();
+        await refreshData();
+        if (isWeb) {
+          window.alert("✅ All data cleared.");
+        } else {
+          Alert.alert("Success", "All data cleared");
+        }
+      } catch (error) {
+        if (isWeb) {
+          window.alert("❌ Failed to clear data.");
+        } else {
+          Alert.alert("Error", "Failed to clear data");
+        }
+      } finally {
+        setIsLoadingData(false);
+      }
+    };
+
+    if (isWeb) {
+      if (window.confirm("⚠️ Delete ALL financial data? This cannot be undone.")) {
+        await doClear();
+      }
+    } else {
+      Alert.alert(
+        "Clear All Data",
+        "This will delete ALL financial data. This cannot be undone!",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Clear All", style: "destructive", onPress: doClear },
+        ]
+      );
+    }
   };
+
 
   // Expose functions to window for easy testing via browser console
   React.useEffect(() => {

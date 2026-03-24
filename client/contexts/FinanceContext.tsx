@@ -128,11 +128,11 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
 
       // Fetch fresh data for analysis
       const currentAccounts = await accountStorage.getAll();
-      const currentGoals = await goalStorage.getAll();
       const currentBudgets = await budgetStorage.getAll();
 
       const analysis = await fetchAIAnalysis(transactions, currentAccounts, currentBudgets, settings);
-      const broker = new InvestmentBrokerAgent(analysis, settings);
+      // Pass real accounts so investment amounts use actual balance
+      const broker = new InvestmentBrokerAgent(analysis, settings, currentAccounts);
       const recs = broker.generateRecommendations();
 
       if (recs.length > 0) {
@@ -147,7 +147,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
 
         if (!recentInv) {
           // Find funding account (highest balance)
-          const fundingAccount = currentAccounts.sort((a, b) => b.balance - a.balance)[0];
+          const fundingAccount = [...currentAccounts].sort((a, b) => b.balance - a.balance)[0];
 
           if (fundingAccount && fundingAccount.balance >= topRec.recommendedAmount) {
             // 1. Add Investment
@@ -161,8 +161,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
             };
             await investmentStorage.add(newInvestment);
 
-            // 2. Add Expense Transaction
-            // We call transactionStorage directly to avoid recursive loop with addTransaction
+            // 2. Add Expense Transaction (avoid recursive loop by using storage directly)
             const invTxn: Omit<Transaction, "id" | "createdAt"> = {
               type: "expense",
               amount: topRec.recommendedAmount,
@@ -177,7 +176,17 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
             await transactionStorage.add(invTxn);
             await accountStorage.updateBalance(fundingAccount.id, -topRec.recommendedAmount);
 
-            console.log("Auto-invest executed successfully");
+            // Notify user — works on both web and native
+            const msg = `🤖 Auto-Invest: ₹${topRec.recommendedAmount.toLocaleString('en-IN')} invested in ${INVESTMENT_CONFIG[topRec.type].label}`;
+            console.log(msg);
+            if (typeof window !== "undefined") {
+              // Non-blocking toast style notification using browser API
+              setTimeout(() => {
+                if ((window as any).alert) {
+                  window.alert(msg);
+                }
+              }, 500);
+            }
           }
         }
       }
@@ -185,6 +194,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       console.error("Auto-invest check failed:", error);
     }
   };
+
 
   const addTransaction = async (
     transaction: Omit<Transaction, "id" | "createdAt">,

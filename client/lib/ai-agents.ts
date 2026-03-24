@@ -12,6 +12,9 @@ import {
     INVESTMENT_CONFIG,
 } from "@/types/finance";
 
+// Percentage of total balance that can be invested automatically
+const AUTO_INVEST_RATIO = 0.20;
+
 const getAiServiceUrl = () => {
   const url = process.env.EXPO_PUBLIC_AI_SERVICE_URL;
   if (!url) {
@@ -80,28 +83,31 @@ export const fetchAIAnalysis = async (
 export class InvestmentBrokerAgent {
     private analysis: AIAnalysisResult | null;
     private settings: AIAgentSettings;
+    private accounts: Account[];
 
     constructor(
         analysis: AIAnalysisResult | null,
-        settings: AIAgentSettings
+        settings: AIAgentSettings,
+        accounts: Account[] = []
     ) {
         this.analysis = analysis;
         this.settings = settings;
+        this.accounts = accounts;
     }
 
     generateRecommendations(): InvestmentRecommendation[] {
         if (!this.analysis) return [];
 
         const allocation = this.analysis.portfolio_allocation;
-        // Total balance logic for sizing
-        // (This part can stay client-side or be moved to Python)
-        const totalAvailable = 10000; // Placeholder or calculate from accounts
+        // Use real account balances — invest up to AUTO_INVEST_RATIO of total balance
+        const totalBalance = this.accounts.reduce((sum, acc) => sum + acc.balance, 0);
+        const totalAvailable = totalBalance > 0 ? Math.round(totalBalance * AUTO_INVEST_RATIO) : 5000;
 
         return Object.entries(allocation).map(([type, percentage]) => ({
             id: `${Date.now()}-${type}`,
             type: type as InvestmentType,
-            recommendedAmount: Math.round(totalAvailable * percentage),
-            reason: `AI-optimized allocation based on your risk profile and market trends.`,
+            recommendedAmount: Math.max(100, Math.round(totalAvailable * percentage)),
+            reason: `AI-optimized allocation: ${(percentage * 100).toFixed(0)}% of your investable surplus based on risk profile and market trends.`,
             expectedReturn: INVESTMENT_CONFIG[type as InvestmentType]?.defaultReturn || 0.05,
             riskLevel: this.settings.investmentBroker.riskTolerance,
             createdAt: new Date().toISOString(),
