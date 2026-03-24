@@ -19,20 +19,20 @@ import { AdaptiveContainer } from "@/components/AdaptiveContainer";
 
 export default function SpendingAdvisorScreen() {
     const { theme } = useTheme();
-    const { transactions, budgets, accounts, aiAnalysis } = useFinance();
+    const { transactions, budgets, accounts, aiAnalysis, isLoading: financeLoading } = useFinance();
 
     const [isLoading, setIsLoading] = useState(true);
     const [advice, setAdvice] = useState<SpendingAdvice | null>(null);
 
     useEffect(() => {
-        if (aiAnalysis) {
+        if (!financeLoading) {
             const advisor = new SpendingAdvisorAgent(aiAnalysis);
             setAdvice(advisor.generateAdvice());
             setIsLoading(false);
         }
-    }, [aiAnalysis]);
+    }, [aiAnalysis, financeLoading]);
 
-    if (isLoading || !advice) {
+    if (financeLoading || isLoading || !advice) {
         return (
             <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
                 <ActivityIndicator size="large" color={theme.link} />
