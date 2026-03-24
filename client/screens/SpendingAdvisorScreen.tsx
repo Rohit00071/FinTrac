@@ -26,11 +26,16 @@ export default function SpendingAdvisorScreen() {
 
     useEffect(() => {
         if (!financeLoading) {
+            const today = new Date().toISOString().substring(0, 10);
+            const todaySpent = transactions
+                .filter(t => t.type === 'expense' && t.date.startsWith(today))
+                .reduce((sum, t) => sum + t.amount, 0);
+            
             const advisor = new SpendingAdvisorAgent(aiAnalysis);
-            setAdvice(advisor.generateAdvice());
+            setAdvice(advisor.generateAdvice(todaySpent));
             setIsLoading(false);
         }
-    }, [aiAnalysis, financeLoading]);
+    }, [aiAnalysis, financeLoading, transactions]);
 
     if (financeLoading || isLoading || !advice) {
         return (

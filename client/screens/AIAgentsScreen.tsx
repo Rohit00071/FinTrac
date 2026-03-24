@@ -75,8 +75,13 @@ export default function AIAgentsScreen() {
             });
 
             // Load spending stats
+            const today = new Date().toISOString().substring(0, 10);
+            const todaySpent = transactions
+                .filter(t => t.type === 'expense' && t.date.startsWith(today))
+                .reduce((sum, t) => sum + t.amount, 0);
+
             const advisor = new SpendingAdvisorAgent(aiAnalysis);
-            const advice = advisor.generateAdvice();
+            const advice = advisor.generateAdvice(todaySpent);
             setSpendingStats({
                 dailyLimit: advice.dailyLimit,
                 todaySpent: advice.todaySpent,

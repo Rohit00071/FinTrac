@@ -15,8 +15,14 @@ import {
 const getAiServiceUrl = () => {
   const url = process.env.EXPO_PUBLIC_AI_SERVICE_URL;
   if (!url) {
-    // If we're on web, default to our own backend proxy
-    return typeof window !== "undefined" ? "/api" : "http://localhost:8000";
+    if (typeof window !== "undefined") {
+      // If we're on web and it's local development, point to our backend proxy on port 5000
+      if (window.location.hostname === "localhost") {
+        return "http://localhost:5000/api";
+      }
+      return "/api";
+    }
+    return "http://localhost:8000";
   }
   // If it's a relative path, use it as is
   if (url.startsWith("/")) return url;
@@ -122,12 +128,12 @@ export class SpendingAdvisorAgent {
         this.analysis = analysis;
     }
 
-    generateAdvice(): SpendingAdvice {
+    generateAdvice(todaySpent: number = 0): SpendingAdvice {
         const fallback: SpendingAdvice = {
             id: Date.now().toString(),
             dailyLimit: 0,
-            todaySpent: 0,
-            remainingToday: 0,
+            todaySpent: todaySpent,
+            remainingToday: -todaySpent,
             weeklyProjection: 0,
             tips: ["AI Service currently unavailable. Check your connection."],
             alerts: [],
@@ -139,8 +145,8 @@ export class SpendingAdvisorAgent {
         return {
             id: Date.now().toString(),
             dailyLimit: this.analysis.daily_spending_limit,
-            todaySpent: 0, // Should be calculated from today's transactions in context
-            remainingToday: this.analysis.daily_spending_limit,
+            todaySpent: todaySpent,
+            remainingToday: this.analysis.daily_spending_limit - todaySpent,
             weeklyProjection: (this.analysis.prediction_details.predicted_spending_30d / 30) * 7,
             tips: this.analysis.insights,
             alerts: this.analysis.warnings,

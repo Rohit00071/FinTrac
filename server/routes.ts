@@ -13,7 +13,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (publicUrl && publicUrl.startsWith("http")) {
       return publicUrl;
     }
-    return "http://localhost:8000";
+    return "http://127.0.0.1:8000";
   };
 
   const AI_SERVICE_URL = getAiTarget();
@@ -21,10 +21,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   console.log(`Setting up AI proxy to: ${AI_SERVICE_URL}`);
 
   app.use(
-    "/api/ai",
     createProxyMiddleware({
       target: AI_SERVICE_URL,
       changeOrigin: true,
+      pathFilter: "/api/ai/**",
       pathRewrite: {
         "^/api/ai": "/ai",
       },
@@ -36,6 +36,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             proxyReq.setHeader("Content-Length", Buffer.byteLength(bodyData));
             proxyReq.write(bodyData);
           }
+        },
+        proxyRes: (proxyRes: any, req: any, res: any) => {
+          proxyRes.headers['Access-Control-Allow-Origin'] = req.headers.origin || '*';
+          proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
+          proxyRes.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';
+          proxyRes.headers['Access-Control-Allow-Credentials'] = 'true';
         },
       },
     })

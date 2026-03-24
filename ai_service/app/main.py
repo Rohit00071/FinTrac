@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Body
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict, Any
 from app.utils.feature_engineering import extract_features
 from app.agents.spending_prediction import predict_spending
@@ -7,6 +8,15 @@ from app.agents.behavior_analysis import analyze_behavior
 from app.agents.savings_optimization import optimize_savings
 
 app = FastAPI(title="FinTrac AI Service")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/ai/analyze")
 async def analyze_finances(data: Dict[str, Any] = Body(...)):

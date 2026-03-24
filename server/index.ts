@@ -21,6 +21,11 @@ function setupCors(app: express.Application) {
       origins.add(`https://${process.env.REPLIT_DEV_DOMAIN}`);
     }
 
+    // Add local development origins
+    origins.add("http://localhost:8081");
+    origins.add("http://127.0.0.1:8081");
+    origins.add("http://localhost:19006"); // Standard Expo web port
+
     if (process.env.REPLIT_DOMAINS) {
       process.env.REPLIT_DOMAINS.split(",").forEach((d) => {
         origins.add(`https://${d.trim()}`);
@@ -238,9 +243,8 @@ function setupErrorHandler(app: express.Application) {
   setupBodyParsing(app);
   setupRequestLogging(app);
 
-  configureExpoAndLanding(app);
-
   const server = await registerRoutes(app);
+  configureExpoAndLanding(app);
 
   setupErrorHandler(app);
 

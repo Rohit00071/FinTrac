@@ -14,13 +14,13 @@ def extract_features(transactions, accounts, budgets):
     income_df = df[df['type'] == 'income']
     expense_df = df[df['type'] == 'expense']
     
-    monthly_income = income_df.resample('M', on='date')['amount'].sum().mean() if not income_df.empty else 0
-    monthly_expense = expense_df.resample('M', on='date')['amount'].sum().mean() if not expense_df.empty else 0
+    monthly_income = income_df.resample('ME', on='date')['amount'].sum().mean() if not income_df.empty else 0
+    monthly_expense = expense_df.resample('ME', on='date')['amount'].sum().mean() if not expense_df.empty else 0
     
     saving_rate = (monthly_income - monthly_expense) / monthly_income if monthly_income > 0 else 0
     
     # Volatility
-    spending_volatility = expense_df.resample('M', on='date')['amount'].sum().std() if not expense_df.empty else 0
+    spending_volatility = expense_df.resample('ME', on='date')['amount'].sum().std() if not expense_df.empty else 0
     
     # Category Distribution
     category_dist = expense_df.groupby('category')['amount'].sum().to_dict() if not expense_df.empty else {}
@@ -32,7 +32,7 @@ def extract_features(transactions, accounts, budgets):
     weekend_spending_ratio = weekend_spending / total_spending if total_spending > 0 else 0
     
     # Income Stability (Coefficient of Variation)
-    income_std = income_df.resample('M', on='date')['amount'].sum().std() if not income_df.empty else 0
+    income_std = income_df.resample('ME', on='date')['amount'].sum().std() if not income_df.empty else 0
     income_stability = 1 - (income_std / monthly_income) if monthly_income > 0 else 1
     
     return {
